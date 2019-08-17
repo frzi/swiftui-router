@@ -6,6 +6,8 @@ Inspired by [React Router](https://github.com/ReactTraining/react-router), Swift
 
 **Note**: This project is very much a prototype/proof-of-concept. There are an unreasonable amount of kinks in the code and some basic features missing.
 
+![demo](https://raw.githubusercontent.com/frzi/SwiftUIRouter/master/swiftui-router-demo.gif)
+
 ## Router (entry)
 ```swift
 Router {
