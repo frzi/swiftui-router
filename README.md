@@ -2,6 +2,11 @@ SwiftUI Router
 ==============
 > Merely a proof of concept for now.
 
+[![SwiftUI](https://img.shields.io/badge/SwiftUI-orange.svg)](https://developer.apple.com/xcode/swiftui)
+[![Swift](https://img.shields.io/badge/Swift-5.1-orange.svg)](https://swift.org)
+[![Xcode](https://img.shields.io/badge/Xcode-11.0-blue.svg)](https://developer.apple.com/xcode)
+[![MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
 Inspired by [React Router](https://github.com/ReactTraining/react-router), SwiftUI Router allows you to program (relatively) easy navigation in your app, much like a website. Without the hassle of NavigationView and NavigationLink. SwiftUI Router borrows the following objects from React Router: Link (named LinkButton), Redirect, Route, Router and Switch. Their behaviours should be similar to that of React Router.
 
 **Note**: This project is very much a prototype/proof-of-concept. There are an unreasonable amount of kinks in the code and some basic features missing.
