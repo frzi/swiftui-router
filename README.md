@@ -2,7 +2,7 @@ SwiftUI Router
 ==============
 > Merely a proof of concept for now.
 
-Inspired by [React Router](https://github.com/ReactTraining/react-router), SwiftUI Router allows you to program (relatively) easy navigation in your app, much like a website. SwiftUI Router borrows the following objects from React Router: Link (named LinkButton), Redirect, Route, Router and Switch. Their behaviours should be similar to that of React Router.
+Inspired by [React Router](https://github.com/ReactTraining/react-router), SwiftUI Router allows you to program (relatively) easy navigation in your app, much like a website. Without the hassle of NavigationView and NavigationLink. SwiftUI Router borrows the following objects from React Router: Link (named LinkButton), Redirect, Route, Router and Switch. Their behaviours should be similar to that of React Router.
 
 **Note**: This project is very much a prototype/proof-of-concept. There are an unreasonable amount of kinks in the code and some basic features missing.
 
@@ -76,7 +76,7 @@ Go back or forward. `count` is clamped and will prevent from going out of bounds
 #### `canGoBack: Bool`, `canGoForward: Bool`
 Returns whether you can go back or forward.
 
------
+-----g
 
 ## Todo
 * Allow for (optional) parameters in paths.
