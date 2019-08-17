@@ -76,7 +76,7 @@ Go back or forward. `count` is clamped and will prevent from going out of bounds
 #### `canGoBack: Bool`, `canGoForward: Bool`
 Returns whether you can go back or forward.
 
------g
+-----
 
 ## Todo
 * Allow for (optional) parameters in paths.
