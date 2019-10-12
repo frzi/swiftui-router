@@ -8,20 +8,20 @@
 
 import SwiftUI
 
-public struct LinkButton<Label: View>: View {
+public struct Link<Label: View>: View {
 
-    @EnvironmentObject private var environment: HistoryData
+    @EnvironmentObject private var history: HistoryData
 
     private let content: Label
     private let to: String
     
-    init(to: String, @ViewBuilder content: () -> Label) {
+    public init(to: String, @ViewBuilder content: () -> Label) {
         self.content = content()
         self.to = to
     }
     
     private func onClick() {
-        environment.go(to)
+        history.go(to)
     }
     
     public var body: some View {

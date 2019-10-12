@@ -10,16 +10,14 @@ import SwiftUI
 
 public struct Redirect: View {
 
-    @EnvironmentObject private var environment: HistoryData
+    @EnvironmentObject private var history: HistoryData
     
     public let to: String
     
-    private func commit() {
-        environment.go(to, replace: true)
-    }
-    
     public var body: some View {
         Text("Redirecting")
-            .onAppear(perform: commit)
+            .onAppear {
+                self.history.go(self.to, replace: true)
+            }
     }
 }
