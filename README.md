@@ -54,7 +54,6 @@ Parameters are marked with a colon (`:`) in the path, followed by the parameter 
 
 A parameter's value is *always* of type `String`.
 
-
 ## Switch
 ```swift
 Switch {
