@@ -39,7 +39,7 @@ private struct Suggestions: View {
         ("Babel", "babel"),
         ("Google", "google"),
         ("Microsoft", "microsoft"),
-        ("NVidia", "nvidia"),
+        ("Nvidia", "nvidia"),
     ]
     
     @ViewBuilder

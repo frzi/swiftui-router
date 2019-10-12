@@ -23,6 +23,11 @@ struct RepositoriesRoute: View {
                 Route(path: self.routeData.match + "/:repo") { route in
                     VStack {
                         Text(route.parameters.repo!)
+                            .font(.headline)
+                        
+                        Text("Nothing here for this example.")
+                            .font(.caption)
+                        
                         Spacer()
                     }
                 }
