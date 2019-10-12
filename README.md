@@ -4,10 +4,10 @@ SwiftUI Router
 
 [![SwiftUI](https://img.shields.io/badge/SwiftUI-orange.svg)](https://developer.apple.com/xcode/swiftui)
 [![Swift](https://img.shields.io/badge/Swift-5.1-orange.svg)](https://swift.org)
-[![Xcode](https://img.shields.io/badge/Xcode-11.0-blue.svg)](https://developer.apple.com/xcode)
+[![Xcode](https://img.shields.io/badge/Xcode-11.1-blue.svg)](https://developer.apple.com/xcode)
 [![MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-Inspired by [React Router](https://github.com/ReactTraining/react-router), SwiftUI Router allows you to program (relatively) easy navigation in your app, much like a website. Without the hassle of NavigationView and NavigationLink. SwiftUI Router borrows the following objects from React Router: Link (named LinkButton), Redirect, Route, Router and Switch. Their behaviours should be similar to that of React Router.
+Inspired by [React Router](https://github.com/ReactTraining/react-router), SwiftUI Router allows you to program (relatively) easy navigation in your app, much like a website, without the hassle of NavigationView and NavigationLink. SwiftUI Router borrows the following objects from React Router: Link, Redirect, Route, Router and Switch. Their behaviours should be similar to that of React Router.
 
 **Note**: This project is very much a prototype/proof-of-concept. There are an unreasonable amount of kinks in the code and some basic features missing.
 
@@ -21,9 +21,9 @@ Router {
 ```
 The `Router` view initiates a routing environment. Wrap your entire app (or at least, the part that needs navigation) in a `Router`.
 
-## LinkButton
+## Link
 ```swift
-LinkButton(to: "/my/path") {
+Link(to: "/my/path") {
     Text("Go to next page")
 }
 ```
@@ -37,13 +37,22 @@ When rendered, will redirect instantly to the given path. Set `replace: true` to
 
 ## Route
 ```swift
-Route(path: "/home", exact: false) { props in
+Route(path: "/home", exact: false) {
     HomeView()
+}
+
+Route(path: "/news/:id/:readingMode?", exact: true) { route in
+    NewsItemView(id: route.parameters.id, readingMode: route.parameters.readingMode)
 }
 ```
 Will only render its children when the environment's path matches that of the `Route`. `exact` requires the environment path and route path to match *exactly*. If `false`, the route will also render if the environment path is e.g. **"/home/and/anything/deeper"**.
 
-A `RouteDescription` object is passed to the closure. This allows you to perform some additional logic. **Note**: This feature is unfinished and pretty much useless in its current state. `¯\_(ツ)_/¯`
+#### Parameters
+The path may contain one or multiple (optional) parameters. These parameters are parsed to a dictionary, accessible via the optional `RouteData` object's `.parameters` property. The `RouteData` object is passed along into the `Route`'s content.
+
+Parameters are marked with a colon (`:`) in the path, followed by the parameter name. To make the parameter optional, place a question mark (`?`) behind the parameter's name.
+
+A parameter's value is *always* of type `String`.
 
 ## Switch
 ```swift
@@ -52,7 +61,7 @@ Switch {
         DetailsView()
     }
 
-    Route(path: "/list") { _ in 
+    Route(path: "/list/:option?") { _ in 
         ListView()
     }
 
@@ -63,13 +72,12 @@ Switch {
 ```
 The `Switch` view will only render the first matching `Route` view. This will allow you to render fallback routes. **Note**: due to the `@ViewBuilder` limit, only 10 direct ancestor `Route`s are possible.
 
-#### Animation
-You can add a `.animation()` property to the `Switch` to animate the `Route` transitions.
-
 ## HistoryData
 ```swift
 @EnvironmentObject private var history: HistoryData
 ```
+The `HistoryData` Environment Object contains methods to navigate and can be accessed inside a [`Router`](#router-(entry)).
+
 
 #### `path: String`
 The current environment path. (Computed value)
@@ -86,6 +94,6 @@ Returns whether you can go back or forward.
 -----
 
 ## Todo
-* Allow for (optional) parameters in paths.
+* ~~Allow for (optional) parameters in paths.~~
 * Fix history stack having some odd behaviour when returning to the root.
 * Limit the `Switch` view only to `Route` ancestors?

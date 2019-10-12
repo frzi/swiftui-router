@@ -29,20 +29,32 @@ public struct Router<Content: View>: View {
     }
 }
 
-// MARK: - Router environment object.
+// MARK: - Router environment object
 /// This object allows ancestors to modify the path and history.
 public final class HistoryData: ObservableObject {
     
-    @Published private var historyStack: [String] = []
+    @Published private var historyStack: [String] = ["/"]
     private var forwardStack: [String] = []
         
     // MARK: Getters.
-    public var canGoBack: Bool { !historyStack.isEmpty }
-    public var canGoForward: Bool { !forwardStack.isEmpty }
-    public var path: String { historyStack.last ?? "/" }
+    public var canGoBack: Bool {
+        historyStack.count > 1
+    }
+    
+    public var canGoForward: Bool {
+        !forwardStack.isEmpty
+    }
+    
+    public var path: String {
+        historyStack.last ?? "/"
+    }
     
     // MARK: Methods.
     public func go(_ path: String, replace: Bool = false) {
+        guard path != self.path else {
+            return
+        }
+        
         forwardStack.removeAll()
         if replace {
             historyStack[max(historyStack.count - 1, 0)] = path
@@ -65,17 +77,9 @@ public final class HistoryData: ObservableObject {
         historyStack.append(contentsOf: forwardStack[start...])
         forwardStack.removeLast(total)
     }
-}
-
-// MARK: - Route environment object.
-/// Contains the data of the current route.
-public final class RouteData: ObservableObject {
     
-    public let match: String
-    public let path: String
-    
-    init(match: String = "", path: String = "") {
-        self.match = match
-        self.path = path
+    public func clear() {
+        forwardStack.removeAll()
+        historyStack.removeAll()
     }
 }
