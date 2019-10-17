@@ -61,8 +61,8 @@ Switch {
         DetailsView()
     }
 
-    Route(path: "/list/:option?") { _ in 
-        ListView()
+    Route(path: "/list/:style?") { props in 
+        ListView(style: props.parameters.style)
     }
 
     Route {
