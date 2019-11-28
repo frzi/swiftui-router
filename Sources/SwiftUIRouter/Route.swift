@@ -83,7 +83,7 @@ public class PathParameters<Value> {
         self.data = data
     }
     
-    subscript(dynamicMember member: String) -> Value? {
+    public subscript(dynamicMember member: String) -> Value? {
         return data[member]
     }
 }
