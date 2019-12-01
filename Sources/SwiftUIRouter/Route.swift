@@ -35,7 +35,9 @@ public struct Route<Content: View>: View {
         var parameters: [String : String]?
         var matches = path.isEmpty
             
-        if !matches && switchEnvironment.isActive && !switchEnvironment.isResolved {
+        if (!matches && switchEnvironment.isActive && !switchEnvironment.isResolved)
+            || !switchEnvironment.isActive
+        {
             parameters = try? matcher.execute(path: history.path)
             matches = parameters != nil
         }
