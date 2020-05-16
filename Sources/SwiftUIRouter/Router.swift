@@ -23,7 +23,7 @@ public struct Router<Content: View>: View {
     
     public var body: some View {
         content
-            .environmentObject(HistoryData())
+            .environmentObject(HistoryData(root: self.root))
             .environmentObject(RouteData())
             .environmentObject(SwitchEnviroment())
     }
@@ -33,9 +33,13 @@ public struct Router<Content: View>: View {
 /// This object allows ancestors to modify the path and history.
 public final class HistoryData: ObservableObject {
     
-    @Published private var historyStack: [String] = ["/"]
+    @Published private var historyStack: [String]
     private var forwardStack: [String] = []
-        
+    
+    init(root: String) {
+        self.historyStack = [root]
+    }
+    
     // MARK: Getters.
     public var canGoBack: Bool {
         historyStack.count > 1
