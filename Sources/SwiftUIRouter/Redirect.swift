@@ -11,9 +11,13 @@ import SwiftUI
 public struct Redirect: View {
 
     @EnvironmentObject private var history: HistoryData
-    
+
     public let to: String
-    
+
+    public init(to: String) {
+        self.to = to
+    }
+
     public var body: some View {
         Text("Redirecting")
             .onAppear {
