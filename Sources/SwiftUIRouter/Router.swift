@@ -84,6 +84,6 @@ public final class HistoryData: ObservableObject {
     
     public func clear() {
         forwardStack.removeAll()
-        historyStack.removeAll()
+        historyStack.removeSubrange(1...)
     }
 }
