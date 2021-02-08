@@ -11,7 +11,7 @@ import SwiftUI
 /// whether the current path matches the `NavLink` path. This allows the developer to apply specific styling
 /// when the `NavLink` is 'active'. E.g. highlighting or disabling the contents.
 ///
-/// ```
+/// ```swift
 /// NavLink(to: "/news/latest") { active in
 /// 	Text("Latest news")
 /// 		.color(active ? Color.primary : Color.secondary)

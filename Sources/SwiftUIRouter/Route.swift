@@ -10,22 +10,22 @@ import SwiftUI
 ///
 /// When the environment path matches a `Route`'s path, its contents will be rendered.
 ///
-/// ```
+/// ```swift
 /// Route(path: "settings") {
 /// 	SettingsView()
 /// }
 /// ```
 ///
-/// ## Validation
+/// ## Validation and parameter transform
 /// `Route`s are given the opportunity to add an extra layer of validation. Use the `validator` argument to pass
 /// down a validator function. This function is given a `RouteInformation` object, containing the path parameters.
 /// This function can then return a new value to pass down to `content`, or return `nil` to invalidate the path
 /// matching.
-/// ```
+/// ```swift
 /// func validate(info: RouteInformation) -> UUID? {
 /// 	UUID(info.parameters.uuid!)
 /// }
-///
+/// // Will only render if `uuid` is a valid UUID.
 /// Route(path: "user/:uuid", validator: validate) { uuid in
 /// 	UserScreen(userId: uuid)
 /// }
@@ -34,7 +34,7 @@ import SwiftUI
 /// ## Path relativity
 /// Every path found in a `Route`'s hierarchy is relative to the path of said `Route`. With the exception of paths
 /// starting with `/`. This allows you to develop parts of your app more like separate 'sub' apps.
-/// ```
+/// ```swift
 /// Route("/news") {
 /// 	// Goes to `/news/latest`
 /// 	NavLink(to: "latest") { Text("Latest news") }
@@ -64,7 +64,7 @@ public struct Route<ValidatedData, Content: View>: View {
 	/// - Parameter validator: A function that validates and transforms the route parameters.
 	/// - Parameter content: Views to render. The validated data is passed as an argument.
 	public init(
-		path: String,
+		path: String = "*",
 		validator: @escaping Validator,
 		@ViewBuilder content: @escaping (ValidatedData) -> Content
 	) {
@@ -74,13 +74,13 @@ public struct Route<ValidatedData, Content: View>: View {
 	}
 	
 	public var body: some View {
-		let newRelativePath = resolvePaths(relativePath, path)
+		let thisPath = resolvePaths(relativePath, path)
 		
 		var validatedData: ValidatedData?
 		var routeInformation: RouteInformation?
 
 		if !switchEnvironment.isActive || (switchEnvironment.isActive && !switchEnvironment.isResolved) {
-			if let matchInformation = try? pathMatcher.match(glob: newRelativePath, with: navigation.path),
+			if let matchInformation = try? pathMatcher.match(glob: thisPath, with: navigation.path),
 			   let validated = validator(matchInformation)
 			{
 				validatedData = validated
@@ -91,13 +91,15 @@ public struct Route<ValidatedData, Content: View>: View {
 				}
 			}
 		}
+		
+		//print("route glob:", path, "relative path:", relativePath)
 
 		return Group {
 			if let validatedData = validatedData,
 			   let routeInformation = routeInformation
 			{
 				content(validatedData)
-					.environment(\.relativePath, newRelativePath)
+					.environment(\.relativePath, routeInformation.path)
 					.environmentObject(routeInformation)
 					.environmentObject(SwitchRoutesEnvironment())
 			}
@@ -108,17 +110,17 @@ public struct Route<ValidatedData, Content: View>: View {
 public extension Route where ValidatedData == RouteInformation {
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
 	/// - Parameter content: Views to render. An `RouteInformation` is passed containing route parameters.
-	init(path: String, @ViewBuilder content: @escaping (RouteInformation) -> Content) {
+	init(path: String = "*", @ViewBuilder content: @escaping (RouteInformation) -> Content) {
 		self.path = path
-		self.validator = { a in a }
+		self.validator = { $0 }
 		self.content = content
 	}
 	
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
 	/// - Parameter content: Views to render..
-	init(path: String, @ViewBuilder content: @escaping () -> Content) {
+	init(path: String = "*", @ViewBuilder content: @escaping () -> Content) {
 		self.path = path
-		self.validator = { a in a }
+		self.validator = { $0 }
 		self.content = { _ in content() }
 	}
 }
@@ -129,7 +131,7 @@ public extension Route where ValidatedData == RouteInformation {
 public final class RouteInformation: ObservableObject {
 
 	/// A convenience wrapper for key-values.
-	/// Using dynamicLookup it allows one to to `info.parameters.id`, instead of `info.parameters["id"]`.
+	/// Using dynamicLookup it allows one to write `info.parameters.id`, instead of `info.parameters["id"]`.
 	@dynamicMemberLookup
 	public struct ParameterValues {
 		fileprivate let keyValues: [String : String]
@@ -183,14 +185,19 @@ final class PathMatcher: ObservableObject {
 		}
 
 		// Create a new regex that will eventually match and extract the parameters from a path.
-		var pattern = glob.replacingOccurrences(of: "*", with: ".+")
+		let endsWithAsterisk = glob.last == "*"
+		
+		var pattern = glob
+			.replacingOccurrences(of: "/$", with: "", options: .regularExpression) // Trailing slash.
+			.replacingOccurrences(of: #"\/?\*"#, with: "", options: .regularExpression) // Trailing asterisk.
+		
 		for variable in variables {
 			pattern = pattern.replacingOccurrences(
 				of: "/:" + variable,
 				with: "(/(?<" + variable + ">[^/?]+))", // Named capture group.
 				options: .regularExpression)
 		}
-		pattern = "^" + pattern + "$"
+		pattern = "^(" + pattern + ")" + (endsWithAsterisk ? ".*$" : "$")
 
 		let regex = try NSRegularExpression(pattern: pattern, options: [])
 		
@@ -202,7 +209,7 @@ final class PathMatcher: ObservableObject {
 	func match(glob: String, with path: String) throws -> RouteInformation? {
 		let compiled = try compileRegex(glob)
 		
-		let nsrange = NSRange(path.startIndex..<path.endIndex, in: path)
+		var nsrange = NSRange(path.startIndex..<path.endIndex, in: path)
 		let matches = compiled.matchRegex.matches(in: path, options: [], range: nsrange)
 		if matches.isEmpty {
 			return nil
@@ -220,10 +227,22 @@ final class PathMatcher: ObservableObject {
 				}
 			}
 		}
-
+		
+		// Resolve the glob to get a new relative path.
+		// We only want the part the glob is directly referencing.
+		// I.e., if the glob is `/news/article/*` and the navigation path is `/news/article/1/details`,
+		// we only want "/news/article".
+		nsrange = matches[0].range(at: 1) // Should be the entire capture group.
+		guard nsrange.location != NSNotFound,
+			let range = Range(nsrange, in: path) else {
+			return nil
+		}
+		
+		let resolvedGlob = String(path[range])
+		
 		return RouteInformation(
 			parameters: RouteInformation.ParameterValues(keyValues: parameterValues),
-			path: path
+			path: resolvedGlob
 		)
 	}
 }
