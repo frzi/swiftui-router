@@ -74,13 +74,13 @@ public struct Route<ValidatedData, Content: View>: View {
 	}
 	
 	public var body: some View {
-		let thisPath = resolvePaths(relativePath, path)
+		let resolvedGlob = resolvePaths(relativePath, path)
 		
 		var validatedData: ValidatedData?
 		var routeInformation: RouteInformation?
 
 		if !switchEnvironment.isActive || (switchEnvironment.isActive && !switchEnvironment.isResolved) {
-			if let matchInformation = try? pathMatcher.match(glob: thisPath, with: navigation.path),
+			if let matchInformation = try? pathMatcher.match(glob: resolvedGlob, with: navigation.path),
 			   let validated = validator(matchInformation)
 			{
 				validatedData = validated

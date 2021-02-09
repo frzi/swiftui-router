@@ -3,6 +3,20 @@ import XCTest
 
 final class SwiftUIRouterTests: XCTestCase {
 	
+	func testPathResolving() {
+		let paths: [(String, String)] = [
+			("///unnecessary///slashes", "/unnecessary/slashes"),
+			("non/absolute", "/non/absolute")
+		]
+		
+		for (dirty, cleaned) in paths {
+			XCTAssertTrue(
+				resolvePaths("/", dirty) == cleaned,
+				"Path \(dirty) did not resolve to \(cleaned)"
+			)
+		}
+	}
+	
 	func testCorrectMatches() {
 		let pathMatcher = PathMatcher()
 		
@@ -18,11 +32,14 @@ final class SwiftUIRouterTests: XCTestCase {
 			("/:id?", "/hello"),
 			("/:id/*", "/hello"),
 			("/:id/*", "/hello/world"),
+			("/news/latest", "/news/latest"),
 		]
 		
 		for (glob, path) in notNil {
+			let resolvedGlob = resolvePaths("/", glob)
+			
 			XCTAssertNotNil(
-				try? pathMatcher.match(glob: glob, with: path),
+				try? pathMatcher.match(glob: resolvedGlob, with: path),
 				"Glob \(glob) does not match \(path)."
 			)
 		}
@@ -45,7 +62,7 @@ final class SwiftUIRouterTests: XCTestCase {
 		}
 	}
 	
-	func testPathMatcherVariables() {
+	func testPathVariables() {
 		let pathMatcher = PathMatcher()
 		
 		let tests: [(String, String, [String : String])] = [
@@ -73,7 +90,7 @@ final class SwiftUIRouterTests: XCTestCase {
 		}
 	}
 	
-	func testPathMatcherRegex() {
+	func testRegexCompilation() {
 		let pathMatcher = PathMatcher()
 		
 		// Test if the path matcher can compile valid Regex.
@@ -97,9 +114,10 @@ final class SwiftUIRouterTests: XCTestCase {
 
 	// MARK: -
 	static var allTests = [
-		("testPathMatcherRegex", testPathMatcherRegex),
+		("testPathResolving", testPathResolving),
+		("testRegexCompilation", testRegexCompilation),
 		("testCorrectMatches", testCorrectMatches),
 		("testIncorrectMatches", testIncorrectMatches),
-		("testPathMatcherVariables", testPathMatcherVariables),
+		("testPathVariables", testPathVariables),
 	]
 }
