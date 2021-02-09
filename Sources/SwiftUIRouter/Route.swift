@@ -186,7 +186,7 @@ final class PathMatcher: ObservableObject {
 		for variable in variables {
 			pattern = pattern.replacingOccurrences(
 				of: "/:" + variable,
-				with: "(/(?<" + variable + ">[^/?]+))", // Named capture group.
+				with: "/(?<" + variable + ">[^/?]+)", // Named capture group.
 				options: .regularExpression)
 		}
 		pattern = "^(" + pattern + ")" + (endsWithAsterisk ? ".*$" : "$")
