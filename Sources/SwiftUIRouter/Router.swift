@@ -211,10 +211,10 @@ public struct NavigationAction {
 		self.previousPath = previousPath
 		
 		// Check whether the navigation went higher, deeper or sideways.
-		let previousComponents = previousPath.split(separator: "/")
-		let pathComponents = currentPath.split(separator: "/")
-
-		if previousComponents.count > pathComponents.count {
+		if currentPath.count > previousPath.count && currentPath.starts(with: previousPath + "/") {
+			direction = .deeper
+		}
+		else if previousPath.split(separator: "/").count > currentPath.split(separator: "/").count {
 			direction = .higher
 		}
 		else {
