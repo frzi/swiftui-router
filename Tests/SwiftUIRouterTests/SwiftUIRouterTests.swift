@@ -2,11 +2,13 @@ import XCTest
 @testable import SwiftUIRouter
 
 final class SwiftUIRouterTests: XCTestCase {
-	
+
+	/// Test cleaning/resolving of paths.
 	func testPathResolving() {
 		let paths: [(String, String)] = [
 			("///unnecessary///slashes", "/unnecessary/slashes"),
-			("non/absolute", "/non/absolute")
+			("non/absolute", "/non/absolute"),
+			("home//", "/home"),
 		]
 		
 		for (dirty, cleaned) in paths {
@@ -17,10 +19,10 @@ final class SwiftUIRouterTests: XCTestCase {
 		}
 	}
 	
+	/// Test if the globs and paths match.
 	func testCorrectMatches() {
 		let pathMatcher = PathMatcher()
 		
-		// Test if the globs and paths match.
 		let notNil: [(String, String)] = [
 			("/", "/"),
 			("/*", "/"),
@@ -45,10 +47,10 @@ final class SwiftUIRouterTests: XCTestCase {
 		}
 	}
 	
+	/// Test if the globs and paths *don't* match.
 	func testIncorrectMatches() {
 		let pathMatcher = PathMatcher()
 
-		// Test if the globs and paths *don't* match.
 		let isNil: [(String, String)] = [
 			("/", "/hello"),
 			("/hello", "/world"),
@@ -62,6 +64,7 @@ final class SwiftUIRouterTests: XCTestCase {
 		}
 	}
 	
+	/// Tests if the variables exist and equate.
 	func testPathVariables() {
 		let pathMatcher = PathMatcher()
 		
@@ -90,6 +93,7 @@ final class SwiftUIRouterTests: XCTestCase {
 		}
 	}
 	
+	/// Tests whether glob to Regex compilation doesn't throw.
 	func testRegexCompilation() {
 		let pathMatcher = PathMatcher()
 		
