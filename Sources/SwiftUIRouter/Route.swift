@@ -23,7 +23,7 @@ import SwiftUI
 /// matching.
 /// ```swift
 /// func validate(info: RouteInformation) -> UUID? {
-/// 	UUID(info.parameters.uuid!)
+/// 	UUID(info.parameters["uuid"]!)
 /// }
 /// // Will only render if `uuid` is a valid UUID.
 /// Route(path: "user/:uuid", validator: validate) { uuid in
@@ -91,8 +91,6 @@ public struct Route<ValidatedData, Content: View>: View {
 				}
 			}
 		}
-		
-		//print("route glob:", path, "relative path:", relativePath)
 
 		return Group {
 			if let validatedData = validatedData,
@@ -127,26 +125,20 @@ public extension Route where ValidatedData == RouteInformation {
 
 
 // MARK: -
-/// Information passed to the contents of a `Route`.
+/// Information passed to the contents of a `Route`. As well as accessible as an environment object
+/// inside the hierarchy of a `Route`.
+/// ```swift
+/// @EnvironmentObject var routeInformation: RouteInformation
+/// ```
+/// This object contains the resolved parameters (variables) of the `Route`'s path, as well as the relative path
+/// for all views inside the hierarchy.
 public final class RouteInformation: ObservableObject {
-
-	/// A convenience wrapper for key-values.
-	/// Using dynamicLookup it allows one to write `info.parameters.id`, instead of `info.parameters["id"]`.
-	@dynamicMemberLookup
-	public struct ParameterValues {
-		fileprivate let keyValues: [String : String]
-		
-		public subscript(dynamicMember member: String) -> String? {
-			return keyValues[member]
-		}
-	}
-	
-	public let parameters: ParameterValues
 	public let path: String
+	public let parameters: [String : String]
 	
-	init(parameters: ParameterValues, path: String) {
-		self.parameters = parameters
+	init(path: String, parameters: [String : String] = [:]) {
 		self.path = path
+		self.parameters = parameters
 	}
 }
 
@@ -188,7 +180,7 @@ final class PathMatcher: ObservableObject {
 		let endsWithAsterisk = glob.last == "*"
 		
 		var pattern = glob
-			.replacingOccurrences(of: "/$", with: "", options: .regularExpression) // Trailing slash.
+			.replacingOccurrences(of: "^[^/]/$", with: "", options: .regularExpression) // Trailing slash.
 			.replacingOccurrences(of: #"\/?\*"#, with: "", options: .regularExpression) // Trailing asterisk.
 		
 		for variable in variables {
@@ -241,8 +233,8 @@ final class PathMatcher: ObservableObject {
 		let resolvedGlob = String(path[range])
 		
 		return RouteInformation(
-			parameters: RouteInformation.ParameterValues(keyValues: parameterValues),
-			path: resolvedGlob
+			path: resolvedGlob,
+			parameters: parameterValues
 		)
 	}
 }

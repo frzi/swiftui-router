@@ -95,9 +95,9 @@ public final class NavigationData: ObservableObject {
 	/// This means you can use `/` to navigate using an absolute path and `../` to go up a directory.
 	///
 	/// ```
-	/// navigation.navigate(to: "news") // Relative.
-	/// navigation.navigate(to: "/settings/user") // Absolute.
-	/// navigation.navigate(to: "../") // Up one, relatively.
+	/// navigation.navigate("news") // Relative.
+	/// navigation.navigate("/settings/user") // Absolute.
+	/// navigation.navigate("..") // Up one, relatively.
 	/// ```
 	///
 	/// Navigating to the same path as the current path is a noop. If the `DEBUG` flag is enabled, a warning
@@ -225,6 +225,8 @@ public struct NavigationAction {
 
 
 // MARK: - Relative path environment key
+/// NOTE: This has actually become quite redundant thanks to `RouteInformation`'s changes.
+/// Remove and use `RouteInformation` environment objects instead?
 struct RelativeRouteEnvironment: EnvironmentKey {
 	static var defaultValue = "/"
 }
