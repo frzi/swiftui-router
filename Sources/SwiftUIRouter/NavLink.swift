@@ -26,6 +26,7 @@ public struct NavLink<Content: View>: View {
 	@Environment(\.relativePath) private var relativePath
 	
 	private let content: (Bool) -> Content
+	private let exact: Bool
 	private let path: String
 	private let replace: Bool
 	
@@ -45,6 +46,7 @@ public struct NavLink<Content: View>: View {
 	) {
 		self.path = path
 		self.replace = replace
+		self.exact = exact
 		self.content = content
 	}
 	
@@ -62,7 +64,7 @@ public struct NavLink<Content: View>: View {
 	
 	public var body: some View {
 		let absolutePath = resolvePaths(relativePath, path)
-		let active = navigation.path.starts(with: absolutePath)
+		let active = exact ? navigation.path == absolutePath : navigation.path.starts(with: absolutePath)
 		
 		return Button(action: onPressed) {
 			content(active)
