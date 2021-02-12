@@ -97,7 +97,7 @@ SwitchRoutes {
 Navigate(to: "/error-404")
 ```
 
-### `NavigationData`
+### `Navigator`
 ```swift
-@EnvironmentObject var navigation: NavigationData
+@EnvironmentObject var navigator: Navigator
 ```

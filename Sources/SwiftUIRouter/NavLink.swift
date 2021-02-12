@@ -22,7 +22,7 @@ import SwiftUI
 /// the specifics of path relativity.
 public struct NavLink<Content: View>: View {
 
-	@EnvironmentObject private var navigation: NavigationData
+	@EnvironmentObject private var navigator: Navigator
 	@Environment(\.relativePath) private var relativePath
 	
 	private let content: (Bool) -> Content
@@ -62,14 +62,14 @@ public struct NavLink<Content: View>: View {
 	// MARK: -
 	private func onPressed() {
 		let resolvedPath = resolvePaths(relativePath, path)
-		if navigation.path != resolvedPath {
-			navigation.navigate(resolvedPath, replace: replace)
+		if navigator.path != resolvedPath {
+			navigator.navigate(resolvedPath, replace: replace)
 		}
 	}
 	
 	public var body: some View {
 		let absolutePath = resolvePaths(relativePath, path)
-		let active = exact ? navigation.path == absolutePath : navigation.path.starts(with: absolutePath)
+		let active = exact ? navigator.path == absolutePath : navigator.path.starts(with: absolutePath)
 		
 		return Button(action: onPressed) {
 			content(active)

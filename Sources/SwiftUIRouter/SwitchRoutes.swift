@@ -23,7 +23,7 @@ import SwiftUI
 public struct SwitchRoutes<Content: View>: View {
 
 	// Required to be present, forcing the `SwitchRoutes` to re-render on path changes.
-	@EnvironmentObject private var navigation: NavigationData
+	@EnvironmentObject private var navigation: Navigator
 	private let contents: () -> Content
 	
 	/// - Parameter contents: Routes to switch through.

@@ -24,7 +24,7 @@ import SwiftUI
 /// the specifics of path relativity.
 public struct Navigate: View {
 
-	@EnvironmentObject private var navigation: NavigationData
+	@EnvironmentObject private var navigator: Navigator
 	@Environment(\.relativePath) private var relativePath
 
 	private let path: String
@@ -38,8 +38,8 @@ public struct Navigate: View {
 		Text("Navigating...")
 			.hidden()
 			.onAppear {
-				if navigation.path != path {
-					navigation.navigate(resolvePaths(relativePath, path), replace: true)
+				if navigator.path != path {
+					navigator.navigate(resolvePaths(relativePath, path), replace: true)
 				}
 			}
 	}

@@ -52,7 +52,7 @@ public struct Route<ValidatedData, Content: View>: View {
 	public typealias Validator = (RouteInformation) -> ValidatedData?
 
 	@Environment(\.relativePath) private var relativePath
-	@EnvironmentObject private var navigation: NavigationData
+	@EnvironmentObject private var navigator: Navigator
 	@EnvironmentObject private var switchEnvironment: SwitchRoutesEnvironment
 	@StateObject private var pathMatcher = PathMatcher()
 	
@@ -80,7 +80,7 @@ public struct Route<ValidatedData, Content: View>: View {
 		var routeInformation: RouteInformation?
 
 		if !switchEnvironment.isActive || (switchEnvironment.isActive && !switchEnvironment.isResolved) {
-			if let matchInformation = try? pathMatcher.match(glob: resolvedGlob, with: navigation.path),
+			if let matchInformation = try? pathMatcher.match(glob: resolvedGlob, with: navigator.path),
 			   let validated = validator(matchInformation)
 			{
 				validatedData = validated

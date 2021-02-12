@@ -9,7 +9,7 @@ import SwiftUI
 /// Entry for a routing environment.
 ///
 /// The Router holds the state of the current path (i.e. the URI).
-/// Wrap your entire app (or the view that initiates a routing environment) using this View.
+/// Wrap your entire app (or the view that initiates a routing environment) using this view.
 ///
 /// ```swift
 /// Router {
@@ -26,20 +26,23 @@ import SwiftUI
 /// work completely independent of each other. It is not possible to navigate from one Router to another; whether
 /// via `NavLink` or pragmatically.
 ///
-/// - Note: A Router's base path is always `/`.
+/// - Note: A Router's base path (root) is always `/`.
 public struct Router<Content: View>: View {
 
-	@StateObject private var navigationData: NavigationData
+	@StateObject private var navigator: Navigator
 	private let content: Content
 
+	/// Initialize a Router environment.
+	/// - Parameter initialPath: The initial path the `Router` should start at once initialized.
+	/// - Parameter content: Content views to render inside the Router environment.
 	public init(initialPath: String = "/" ,@ViewBuilder content: () -> Content) {
-		_navigationData = StateObject(wrappedValue: NavigationData(initialPath: initialPath))
+		_navigator = StateObject(wrappedValue: Navigator(initialPath: initialPath))
 		self.content = content()
 	}
 	
 	public var body: some View {
 		content
-			.environmentObject(navigationData)
+			.environmentObject(navigator)
 			.environmentObject(SwitchRoutesEnvironment())
 			.environment(\.relativePath, "/")
 	}
@@ -55,9 +58,9 @@ public struct Router<Content: View>: View {
 /// - Note: This EnvironmentObject is available in all children of a `Router`.
 ///
 /// ```swift
-/// @EnvironmentObject var navigation: NavigationData
+/// @EnvironmentObject var navigator: Navigator
 /// ```
-public final class NavigationData: ObservableObject {
+public final class Navigator: ObservableObject {
 	
 	@Published private var historyStack: [String]
 	@Published private var forwardStack: [String] = []
@@ -95,9 +98,9 @@ public final class NavigationData: ObservableObject {
 	/// This means you can use `/` to navigate using an absolute path and `../` to go up a directory.
 	///
 	/// ```swift
-	/// navigation.navigate("news") // Relative.
-	/// navigation.navigate("/settings/user") // Absolute.
-	/// navigation.navigate("..") // Up one, relatively.
+	/// navigator.navigate("news") // Relative.
+	/// navigator.navigate("/settings/user") // Absolute.
+	/// navigator.navigate("..") // Up one, relatively.
 	/// ```
 	///
 	/// Navigating to the same path as the current path is a noop. If the `DEBUG` flag is enabled, a warning
