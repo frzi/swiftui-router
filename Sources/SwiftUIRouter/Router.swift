@@ -11,7 +11,7 @@ import SwiftUI
 /// The Router holds the state of the current path (i.e. the URI).
 /// Wrap your entire app (or the view that initiates a routing environment) using this View.
 ///
-/// ```
+/// ```swift
 /// Router {
 /// 	HomeView()
 ///
@@ -54,7 +54,7 @@ public struct Router<Content: View>: View {
 ///
 /// - Note: This EnvironmentObject is available in all children of a `Router`.
 ///
-/// ```
+/// ```swift
 /// @EnvironmentObject var navigation: NavigationData
 /// ```
 public final class NavigationData: ObservableObject {
@@ -94,7 +94,7 @@ public final class NavigationData: ObservableObject {
 	/// The given path (`to`) is always relative to the current environment path.
 	/// This means you can use `/` to navigate using an absolute path and `../` to go up a directory.
 	///
-	/// ```
+	/// ```swift
 	/// navigation.navigate("news") // Relative.
 	/// navigation.navigate("/settings/user") // Absolute.
 	/// navigation.navigate("..") // Up one, relatively.
@@ -205,20 +205,29 @@ public struct NavigationAction {
 	public let previousPath: String
 	public let direction: Direction
 	
-	fileprivate init(currentPath: String, previousPath: String, action: Action) {
+	init(currentPath: String, previousPath: String, action: Action) {
 		self.action = action
 		self.currentPath = currentPath
 		self.previousPath = previousPath
 		
 		// Check whether the navigation went higher, deeper or sideways.
-		if currentPath.count > previousPath.count && currentPath.starts(with: previousPath + "/") {
+		if currentPath.count > previousPath.count
+			&& (currentPath.starts(with: previousPath + "/") || previousPath == "/")
+		{
 			direction = .deeper
 		}
-		else if previousPath.split(separator: "/").count > currentPath.split(separator: "/").count {
-			direction = .higher
-		}
 		else {
-			direction = .sideways
+			let currentComponents = currentPath.split(separator: "/")
+			let previousComponents = previousPath.split(separator: "/")
+
+			if currentComponents.count == previousComponents.count
+				&& currentComponents.dropLast(1) == previousComponents.dropLast(1)
+			{
+				direction = .sideways
+			}
+			else {
+				direction = .higher
+			}
 		}
 	}
 }

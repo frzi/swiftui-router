@@ -115,6 +115,27 @@ final class SwiftUIRouterTests: XCTestCase {
 			)
 		}
 	}
+	
+	/// Test navigation actions.
+	func testNavigationAction() {
+		// From, to, expected direction.
+		let tests: [(String, String, NavigationAction.Direction)] = [
+			("/", "/hello", .deeper),
+			("/hello", "/world", .sideways),
+			("/hello", "/", .higher),
+			("/movies/genres", "/movies", .higher),
+			("/movies/actors", "/movies/genres", .sideways),
+			("/movies/genres", "/news/latest", .higher),
+		]
+		
+		for (from, to, direction) in tests {
+			let navigationAction = NavigationAction(currentPath: to, previousPath: from, action: .push)
+			XCTAssertTrue(
+				navigationAction.direction == direction,
+				"Direction from \(from) to \(to) is: \(navigationAction.direction), expected: \(direction)"
+			)
+		}
+	}
 
 	// MARK: -
 	static var allTests = [
@@ -123,5 +144,6 @@ final class SwiftUIRouterTests: XCTestCase {
 		("testCorrectMatches", testCorrectMatches),
 		("testIncorrectMatches", testIncorrectMatches),
 		("testPathVariables", testPathVariables),
+		("testNavigationAction", testNavigationAction),
 	]
 }

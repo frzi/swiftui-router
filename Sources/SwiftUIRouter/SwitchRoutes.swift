@@ -8,7 +8,7 @@ import SwiftUI
 
 /// Render the first matching `Route` and ignore the rest.
 ///
-/// ```
+/// ```swift
 /// SwitchRoutes {
 /// 	Route(path: "settings") {
 /// 		SettingsView()
