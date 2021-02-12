@@ -115,7 +115,7 @@ public extension Route where ValidatedData == RouteInformation {
 	}
 	
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
-	/// - Parameter content: Views to render..
+	/// - Parameter content: Views to render.
 	init(path: String = "*", @ViewBuilder content: @escaping () -> Content) {
 		self.path = path
 		self.validator = { $0 }
