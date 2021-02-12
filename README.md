@@ -15,29 +15,35 @@ With **SwiftUI Router** you can power your SwiftUI app with path based routing. 
 * [Quick look](#quick-look-👓)
 
 ## Installation 🚀
+### Xcode
 Add the dependency to your project in Xcode via *File > Swift Packages > Add Package Dependency...*
 ```
 https://github.com/frzi/SwiftUIRouter.git
 ```
-Or if your project is a Swift Package itself, add it to the `Package.swift`:
+### Swift Package
+If your project is a Swift Package itself, add the dependency to the `Package.swift`:
 ```swift
 .package(url: "https://github.com/frzi/SwiftUIRouter.git", .upToNextMinor(from: "0.2.0"))
 ```
-Then import the package in your code
+
+<br>
+
+## Documentation 📚
+
+<br>
+
+## Quick look 👓
 ```swift
 import SwiftUIRouter
 ```
 
-## Documentation 📚
-
-## Quick look 👓
-### Router
+### `Router`
 ```swift
 Router {
 	RootView()
 }
 ```
-### Route
+### `Route`
 ```swift
 Route(path: "news/*") {
 	NewsScreen()
@@ -49,6 +55,7 @@ Route(path: "user/:id?") { info in
 	UserScreen(id: info.parameters["id"])
 }
 ```
+#### Parameters
 #### Parameter validation
 ```swift
 func validateUserID(routeInfo: RouteInformation) -> UUID? {
@@ -59,13 +66,15 @@ Route(path: "user/:uuid", validator: validateUserID) { uuid in
 	UserScreen(userID: uuid)
 }
 ```
-### NavLink
+
+### `NavLink`
 ```swift
 NavLink(to: "/news/latest") {
 	Text("Latest news")
 }
 ```
-### SwitchRoutes
+
+### `SwitchRoutes`
 ```swift
 SwitchRoutes {
 	Route(path: "latest") {
@@ -82,11 +91,13 @@ SwitchRoutes {
 	}
 }
 ```
-### Navigate
+
+### `Navigate`
 ```swift
 Navigate(to: "/error-404")
 ```
-### NavigationData
+
+### `NavigationData`
 ```swift
 @EnvironmentObject var navigation: NavigationData
 ```

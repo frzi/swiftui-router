@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Wrapper around a `Button` with the ability to navigate to a new URI.
+/// Convenience wrapper around a `Button` with the ability to navigate to a new path.
 ///
 /// A button that will navigate to the given path when pressed. Additionally it can provide information
 /// whether the current path matches the `NavLink` path. This allows the developer to apply specific styling
@@ -50,6 +50,11 @@ public struct NavLink<Content: View>: View {
 		self.content = content
 	}
 	
+	/// Button to navigate to a new path.
+	///
+	/// - Parameter to: New path to navigate to when pressed.
+	/// - Parameter replace: Replace the current entry in the history stack.
+	/// - Parameter content: Content views.
 	public init(to path: String, replace: Bool = false, @ViewBuilder content: @escaping () -> Content) {
 		self.init(to: path, replace: replace, exact: false, content: { _ in content() })
 	}
