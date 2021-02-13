@@ -72,7 +72,7 @@ public struct Route<ValidatedData, Content: View>: View {
 		self.path = path
 		self.validator = validator
 	}
-	
+
 	public var body: some View {
 		let resolvedGlob = resolvePaths(relativePath, path)
 		

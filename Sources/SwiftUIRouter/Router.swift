@@ -49,7 +49,7 @@ public struct Router<Content: View>: View {
 }
 
 
-// MARK: - Router environment
+// MARK: - Navigator (router environment)
 /// EnvironmentObject storing the state of a Router.
 ///
 /// Use this object to pragmatically navigate to a new path, jump forward or back in the history, to clear the
