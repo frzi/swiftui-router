@@ -19,7 +19,8 @@ let package = Package(
 	targets: [
 		.target(
 			name: "SwiftUIRouter",
-			dependencies: []),
+			dependencies: [],
+			path: "Sources"),
 		.testTarget(
 			name: "SwiftUIRouterTests",
 			dependencies: ["SwiftUIRouter"]),
