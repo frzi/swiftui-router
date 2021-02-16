@@ -11,14 +11,14 @@ SwiftUI Router
 With **SwiftUI Router** you can power your SwiftUI app with path based routing. By utilizing a path based system, navigation in your app becomes more flexible and easier to maintain.
 
 ## Index
-* [Installation](#installation-🚀)
-* [Documentation](#documentation-📚)
-* [Usage](#usage-💪)
+* [Installation](#installation-)
+* [Documentation](#documentation-)
+* [Usage](#usage-)
 
 ## Installation 🚀
 If your project is a Swift Package itself, add the dependency to the `Package.swift`:
 ```swift
-.package(url: "https://github.com/frzi/SwiftUIRouter.git", .upToNextMinor(from: "0.2.0"))
+.package(url: "https://github.com/frzi/SwiftUIRouter.git", from: "0.2.0")
 ```
 Or if you're using Xcode, add the dependency to your project via *File > Swift Packages > Add Package Dependency...* and use the above url.
 

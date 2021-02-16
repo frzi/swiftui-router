@@ -6,9 +6,11 @@ final class SwiftUIRouterTests: XCTestCase {
 	/// Test cleaning/resolving of paths.
 	func testPathResolving() {
 		let paths: [(String, String)] = [
+			("/", "/"),
 			("///unnecessary///slashes", "/unnecessary/slashes"),
 			("non/absolute", "/non/absolute"),
 			("home//", "/home"),
+			("trailing/slash/", "/trailing/slash"),
 		]
 		
 		for (dirty, cleaned) in paths {
@@ -35,6 +37,8 @@ final class SwiftUIRouterTests: XCTestCase {
 			("/:id/*", "/hello"),
 			("/:id/*", "/hello/world"),
 			("/news/latest", "/news/latest"),
+			("/user/:id/*", "/user/1"),
+			("/user/:id/*", "/user/1/settings"),
 		]
 		
 		for (glob, path) in notNil {
@@ -54,6 +58,7 @@ final class SwiftUIRouterTests: XCTestCase {
 		let isNil: [(String, String)] = [
 			("/", "/hello"),
 			("/hello", "/world"),
+			("/foo/:bar?/hello", "/foo/hello"),
 		]
 		
 		for (glob, path) in isNil {
