@@ -47,6 +47,8 @@ import SwiftUI
 /// 	}
 /// }
 /// ```
+///
+/// - Note: A `Route`'s default path is `*`, meaning it will always match.
 public struct Route<ValidatedData, Content: View>: View {
 	
 	public typealias Validator = (RouteInformation) -> ValidatedData?

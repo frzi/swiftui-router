@@ -8,18 +8,26 @@ import SwiftUI
 
 /// Render the first matching `Route` and ignore the rest.
 ///
+/// Use this view when you want to work with 'fallbacks'.
+///
 /// ```swift
 /// SwitchRoutes {
 /// 	Route(path: "settings") {
 /// 		SettingsView()
-///		}
+/// 	}
 /// 	Route(path: ":id") { info in
 /// 		ContentView(id: info.params.id!)
+/// 	}
+/// 	Route {
+/// 		HomeView()
 /// 	}
 /// }
 /// ```
 /// In the above example, if the environment path is `/settings`, only the first `Route` will be rendered.
-/// Because this is the first match. The `Route` with a path of `:id`, despite being a match, will be ignored.
+/// Because this is the first match. The `Route`s after will not be rendered, despite being a match.
+///
+/// - Note: Using `SwitchRoute` can give a slight performance boost when working with a lot of sibling `Route`s,
+/// as once a path match has been found, all subsequent path matching will be skipped.
 public struct SwitchRoutes<Content: View>: View {
 
 	// Required to be present, forcing the `SwitchRoutes` to re-render on path changes.
