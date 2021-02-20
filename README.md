@@ -34,12 +34,18 @@ import SwiftUIRouter
 <br>
 
 ## Usage 💪
+Below a quick rundown of the available views and objects and their basic features. For further details, please check out the documentation in the Swift files.
+
 ### `Router`
 ```swift
 Router {
 	RootView()
 }
 ```
+The entry of a routing environment. Wrap your entire app (or just the part that needs routing) inside a `Router`. This view will initialize all necessary environment values needed for routes.
+
+<br>
+
 ### `Route`
 ```swift
 Route(path: "news/*") {
@@ -52,17 +58,28 @@ Route(path: "user/:id?") { info in
 	UserScreen(id: info.parameters["id"])
 }
 ```
+A view that will only render its contents if its path matches that of the environment. Use `/*` to also match deeper paths. E.g.: the path `news/*` will match the following environment paths: `/news`, `/news/latest`, `/news/article/1` etc.
+
 #### Parameters
+Paths can contain parameters (or variables) that can be read individually. A parameter name is prefixed with a colon (`:`). Additionally, a parameter can be considered optional by postfixing it with a question mark (`?`). The parameters are passed down as a `[String : String]` in an `RouteInformation` object to a `Route`'s contents.
+
 #### Parameter validation
 ```swift
 func validateUserID(routeInfo: RouteInformation) -> UUID? {
-	UUID(routeInfo.parameters["uuid"] ?? "-")
+	UUID(routeInfo.parameters["id"] ?? "")
 }
 
-Route(path: "user/:uuid", validator: validateUserID) { uuid in
-	UserScreen(userID: uuid)
+Route(path: "user/:id", validator: validateUserID) { userID in
+	UserScreen(userID: userID)
 }
 ```
+A `Route` provides an extra step for validating parameters in a path.  
+
+Let's say your `Route` has the path `/user/:id`. By default, the `:id` parameter can be *anything*. But in this case you only want valid [UUIDs](https://developer.apple.com/documentation/foundation/uuid). Using a `Route`'s `validator` argument, you're given a chance to validate (and transform) the parameter's value.  
+
+A validator is a simple function that's passed a `RouteInformation` object (containing the parameters) and returns the transformed value as an optional. The new transformed value is passed down to your view instead of the default `RouteInformation` object. If the transformed value is `nil` the `Route` will prevent rendering its contents.
+
+<br>
 
 ### `NavLink`
 ```swift
@@ -70,6 +87,9 @@ NavLink(to: "/news/latest") {
 	Text("Latest news")
 }
 ```
+A wrapper around a `Button` that will navigate to the given path if pressed.
+
+<br>
 
 ### `SwitchRoutes`
 ```swift
@@ -88,13 +108,30 @@ SwitchRoutes {
 	}
 }
 ```
+A view that will only render the first `Route` whose path matches the environment path. This is useful if you wish to work with fallbacks. This view can give a slight performance boost as it prevents `Route`s from path matching once a previous `Route`'s path is already resolved.
+
+<br>
 
 ### `Navigate`
 ```swift
 Navigate(to: "/error-404")
 ```
+This view will automatically navigate to another path once rendered. One may consider using this view in a fallback `Route` inside a `SwitchRoutes`.
+
+<br>
 
 ### `Navigator`
 ```swift
 @EnvironmentObject var navigator: Navigator
 ```
+An environment object containg the data of the `Router`. With this object you can pragmatically navigate to another path, go back in the history stack or go forward.
+
+<br>
+
+### `RouteInformation`
+```swift
+@EnvironmentObject var routeInformation: RouteInformation
+```
+A lightweight object containing information of the current `Route`. A `RouteInformation` contains the current path and a `[String : String]` with all the parsed parameters.  
+
+This object is passed down by default in a `Route` to its contents. It's also accessible as an environment object.
