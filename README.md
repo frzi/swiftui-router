@@ -3,7 +3,7 @@ SwiftUI Router
 > Easy and maintainable app navigation with path based routing for SwiftUI.
 
 ![SwiftUI](https://img.shields.io/github/v/release/frzi/SwiftUIRouter)
-[![SwiftUI](https://img.shields.io/badge/SwiftUI-orange.svg)](https://developer.apple.com/xcode/swiftui)
+[![SwiftUI](https://img.shields.io/badge/SwiftUI-blue.svg)](https://developer.apple.com/xcode/swiftui)
 [![Swift](https://img.shields.io/badge/Swift-5.3-orange.svg)](https://swift.org)
 [![Xcode](https://img.shields.io/badge/Xcode-12.4-blue.svg)](https://developer.apple.com/xcode)
 [![MIT](https://img.shields.io/badge/license-MIT-black.svg)](https://opensource.org/licenses/MIT)
@@ -31,6 +31,8 @@ import SwiftUIRouter
 <br>
 
 ## Documentation 📚
+- [Getting started with SwiftUI Router — or: Path based routing in SwiftUI](/)
+- [Animating routes](/)
 
 <br>
 
@@ -62,7 +64,7 @@ Route(path: "user/:id?") { info in
 A view that will only render its contents if its path matches that of the environment. Use `/*` to also match deeper paths. E.g.: the path `news/*` will match the following environment paths: `/news`, `/news/latest`, `/news/article/1` etc.
 
 #### Parameters
-Paths can contain parameters (or variables) that can be read individually. A parameter name is prefixed with a colon (`:`). Additionally, a parameter can be considered optional by suffixing it with a question mark (`?`). The parameters are passed down as a `[String : String]` in an `RouteInformation` object to a `Route`'s contents.
+Paths can contain parameters (aka variables) that can be read individually. A parameter's name is prefixed with a colon (`:`). Additionally, a parameter can be considered optional by suffixing it with a question mark (`?`). The parameters are passed down as a `[String : String]` in an `RouteInformation` object to a `Route`'s contents.
 
 #### Parameter validation
 ```swift
