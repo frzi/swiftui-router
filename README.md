@@ -14,18 +14,19 @@ With **SwiftUI Router** you can power your SwiftUI app with path based routing. 
 * [Installation](#installation-)
 * [Documentation](#documentation-)
 * [Usage](#usage-)
+* [License](#license-)
 
-## Installation 🚀
-If your project is a Swift Package itself, add the dependency to the `Package.swift`:
-```swift
-.package(url: "https://github.com/frzi/SwiftUIRouter.git", from: "0.2.0")
+## Installation 🛠
+In Xcode add the dependency to your project via *File > Swift Packages > Add Package Dependency...* and use the following url:
 ```
-Or if you're using Xcode, add the dependency to your project via *File > Swift Packages > Add Package Dependency...* and use the above url.
+https://github.com/frzi/SwiftUIRouter.git
+```
 
 Once added, import the package in your code:
 ```swift
 import SwiftUIRouter
 ```
+*Bada bing bada boom you're ready to go.*
 
 <br>
 
@@ -33,7 +34,7 @@ import SwiftUIRouter
 
 <br>
 
-## Usage 💪
+## Usage 🚀
 Below a quick rundown of the available views and objects and their basic features. For further details, please check out the documentation in the Swift files.
 
 ### `Router`
@@ -61,7 +62,7 @@ Route(path: "user/:id?") { info in
 A view that will only render its contents if its path matches that of the environment. Use `/*` to also match deeper paths. E.g.: the path `news/*` will match the following environment paths: `/news`, `/news/latest`, `/news/article/1` etc.
 
 #### Parameters
-Paths can contain parameters (or variables) that can be read individually. A parameter name is prefixed with a colon (`:`). Additionally, a parameter can be considered optional by postfixing it with a question mark (`?`). The parameters are passed down as a `[String : String]` in an `RouteInformation` object to a `Route`'s contents.
+Paths can contain parameters (or variables) that can be read individually. A parameter name is prefixed with a colon (`:`). Additionally, a parameter can be considered optional by suffixing it with a question mark (`?`). The parameters are passed down as a `[String : String]` in an `RouteInformation` object to a `Route`'s contents.
 
 #### Parameter validation
 ```swift
@@ -135,3 +136,8 @@ An environment object containg the data of the `Router`. With this object you ca
 A lightweight object containing information of the current `Route`. A `RouteInformation` contains the current path and a `[String : String]` with all the parsed parameters.  
 
 This object is passed down by default in a `Route` to its contents. It's also accessible as an environment object.
+
+<br>
+
+## License 📄
+[MIT License](LICENSE).
