@@ -60,7 +60,9 @@ final class SwiftUIRouterTests: XCTestCase {
 			("/", "/hello"),
 			("/hello", "/world"),
 			("/foo/:bar?/hello", "/foo/hello"),
-			("/album/*", "/albums"),
+			("/movie", "/movies"),
+			("/movie/*", "/movies"),
+			("/movie/*", "/movies/actor"),
 		]
 		
 		for (glob, path) in isNil {
