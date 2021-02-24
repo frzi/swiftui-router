@@ -55,10 +55,12 @@ final class SwiftUIRouterTests: XCTestCase {
 	func testIncorrectMatches() {
 		let pathMatcher = PathMatcher()
 
+		// Glob, path
 		let isNil: [(String, String)] = [
 			("/", "/hello"),
 			("/hello", "/world"),
 			("/foo/:bar?/hello", "/foo/hello"),
+			("/album/*", "/albums"),
 		]
 		
 		for (glob, path) in isNil {

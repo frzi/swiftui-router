@@ -191,7 +191,9 @@ final class PathMatcher: ObservableObject {
 				with: "/(?<" + variable + ">[^/?]+)", // Named capture group.
 				options: .regularExpression)
 		}
-		pattern = "^(" + pattern + ")" + (endsWithAsterisk ? ".*$" : "$")
+		pattern = "^" +
+			(pattern.isEmpty ? "" : "(" + pattern + ")") +
+			(endsWithAsterisk ? "(/.*)?$" : "$")
 
 		let regex = try NSRegularExpression(pattern: pattern, options: [])
 		
