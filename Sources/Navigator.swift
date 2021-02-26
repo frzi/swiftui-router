@@ -21,7 +21,7 @@ public final class Navigator: ObservableObject {
 	@Published private var forwardStack: [String] = []
 	
 	/// Last navigation that occurred.
-	@Published private(set) var lastAction: NavigationAction?
+	@Published public private(set) var lastAction: NavigationAction?
 	
 	let initialPath: String
 	let stackLimit: Int

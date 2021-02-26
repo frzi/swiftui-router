@@ -192,7 +192,7 @@ final class PathMatcher: ObservableObject {
 				options: .regularExpression)
 		}
 		pattern = "^" +
-			(pattern.isEmpty ? "" : "(" + pattern + ")") +
+			(pattern.isEmpty ? "" : "(\(pattern))") +
 			(endsWithAsterisk ? "(/.*)?$" : "$")
 
 		let regex = try NSRegularExpression(pattern: pattern, options: [])
