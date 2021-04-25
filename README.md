@@ -31,8 +31,7 @@ import SwiftUIRouter
 <br>
 
 ## Documentation 📚
-- [Getting started with SwiftUI Router — or: Path based routing in SwiftUI](/)
-- [Animating routes](/)
+- [Animating routes](/Docs/AnimatingRoutes.md)
 
 <br>
 
@@ -127,7 +126,7 @@ This view will automatically navigate to another path once rendered. One may con
 ```swift
 @EnvironmentObject var navigator: Navigator
 ```
-An environment object containg the data of the `Router`. With this object you can pragmatically navigate to another path, go back in the history stack or go forward.
+An environment object containg the data of the `Router`. With this object you can programmatically navigate to another path, go back in the history stack or go forward.
 
 <br>
 
