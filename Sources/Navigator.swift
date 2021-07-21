@@ -17,8 +17,8 @@ import SwiftUI
 /// ```
 public final class Navigator: ObservableObject {
 	
-	@Published private var historyStack: [String]
-	@Published private var forwardStack: [String] = []
+	@Published var historyStack: [String]
+	@Published var forwardStack: [String] = []
 	
 	/// Last navigation that occurred.
 	@Published public private(set) var lastAction: NavigationAction?
@@ -76,10 +76,14 @@ public final class Navigator: ObservableObject {
 	
 		forwardStack.removeAll()
 		if replace {
-			historyStack[max(historyStack.count - 1, 0)] = path
+			historyStack[historyStack.indices.endIndex] = path
 		}
 		else {
 			historyStack.append(path)
+		}
+		
+		if historyStack.count > stackLimit {
+			historyStack.removeFirst(historyStack.count - stackLimit)
 		}
 		
 		lastAction = NavigationAction(

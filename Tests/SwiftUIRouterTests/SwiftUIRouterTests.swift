@@ -145,14 +145,20 @@ final class SwiftUIRouterTests: XCTestCase {
 			)
 		}
 	}
-
-	// MARK: -
-	static var allTests = [
-		("testPathResolving", testPathResolving),
-		("testRegexCompilation", testRegexCompilation),
-		("testCorrectMatches", testCorrectMatches),
-		("testIncorrectMatches", testIncorrectMatches),
-		("testPathVariables", testPathVariables),
-		("testNavigationAction", testNavigationAction),
-	]
+	
+	func testStackLimit() {
+		let limit = 3
+		let navigator = Navigator(stackLimit: 3)
+		
+		for a in 0..<10 {
+			navigator.navigate("\(a)")
+		}
+		
+		let stackSize = navigator.forwardStack.count + navigator.historyStack.count
+		
+		XCTAssertTrue(
+			stackSize == limit,
+			"Total stack size (\(stackSize)) exceeded limit of \(limit)."
+		)
+	}
 }
