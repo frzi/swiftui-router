@@ -24,18 +24,17 @@ import SwiftUI
 /// # Routers in Routers
 /// It's possible to have a Router somewhere in the child hierarchy of another Router. *However*, these will
 /// work completely independent of each other. It is not possible to navigate from one Router to another; whether
-/// via `NavLink` or pragmatically.
+/// via `NavLink` or programmatically.
 ///
 /// - Note: A Router's base path (root) is always `/`.
 public struct Router<Content: View>: View {
-
 	@StateObject private var navigator: Navigator
 	private let content: Content
 
 	/// Initialize a Router environment.
 	/// - Parameter initialPath: The initial path the `Router` should start at once initialized.
 	/// - Parameter content: Content views to render inside the Router environment.
-	public init(initialPath: String = "/" ,@ViewBuilder content: () -> Content) {
+	public init(initialPath: String = "/", @ViewBuilder content: () -> Content) {
 		_navigator = StateObject(wrappedValue: Navigator(initialPath: initialPath))
 		self.content = content()
 	}

@@ -17,19 +17,17 @@ import SwiftUI
 /// ```
 public final class Navigator: ObservableObject {
 	
-	@Published var historyStack: [String]
-	@Published var forwardStack: [String] = []
+	@Published private var historyStack: [String]
+	@Published private var forwardStack: [String] = []
 	
 	/// Last navigation that occurred.
 	@Published public private(set) var lastAction: NavigationAction?
 	
 	let initialPath: String
-	let stackLimit: Int
 		
-	init(initialPath: String = "/", stackLimit: Int = 1_000) {
+	init(initialPath: String = "/") {
 		self.initialPath = initialPath
 		self.historyStack = [initialPath]
-		self.stackLimit = stackLimit
 	}
 
 	// MARK: Getters.
@@ -80,10 +78,6 @@ public final class Navigator: ObservableObject {
 		}
 		else {
 			historyStack.append(path)
-		}
-		
-		if historyStack.count > stackLimit {
-			historyStack.removeFirst(historyStack.count - stackLimit)
 		}
 		
 		lastAction = NavigationAction(
