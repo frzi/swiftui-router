@@ -31,7 +31,7 @@ import SwiftUIRouter
 <br>
 
 ## Documentation 📚
-- [Animating routes](/Docs/AnimatingRoutes.md)
+- [Animating routes](/Sources/SwiftUIRouter/AnimatingRoutes.md)
 
 <br>
 
