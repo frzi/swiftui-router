@@ -1,4 +1,5 @@
-![SwiftUI Router](Docs/Images/logo.svg)
+<img src="Docs/Images/logo.svg" alt="SwiftUI Router" width="600">
+
 > Easy and maintainable app navigation with path based routing for SwiftUI.
 
 ![SwiftUI](https://img.shields.io/github/v/release/frzi/SwiftUIRouter?style=for-the-badge)
