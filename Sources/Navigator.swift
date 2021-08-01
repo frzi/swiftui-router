@@ -24,12 +24,10 @@ public final class Navigator: ObservableObject {
 	@Published public private(set) var lastAction: NavigationAction?
 	
 	let initialPath: String
-	let stackLimit: Int
 		
-	init(initialPath: String = "/", stackLimit: Int = 1_000) {
+	init(initialPath: String = "/") {
 		self.initialPath = initialPath
 		self.historyStack = [initialPath]
-		self.stackLimit = stackLimit
 	}
 
 	// MARK: Getters.
@@ -75,8 +73,9 @@ public final class Navigator: ObservableObject {
 		}
 	
 		forwardStack.removeAll()
+
 		if replace {
-			historyStack[max(historyStack.count - 1, 0)] = path
+			historyStack[historyStack.endIndex - 1] = path
 		}
 		else {
 			historyStack.append(path)
@@ -94,6 +93,10 @@ public final class Navigator: ObservableObject {
 	///
 	/// - Parameter total: Total steps to go back.
 	public func goBack(total: Int = 1) {
+		guard canGoBack else {
+			return
+		}
+
 		let previousPath = path
 
 		let total = min(total, historyStack.count)
@@ -113,6 +116,10 @@ public final class Navigator: ObservableObject {
 	///
 	/// - Parameter total: Total steps to go forward.
 	public func goForward(total: Int = 1) {
+		guard canGoForward else {
+			return
+		}
+
 		let previousPath = path
 
 		let total = min(total, forwardStack.count)

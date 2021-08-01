@@ -145,14 +145,4 @@ final class SwiftUIRouterTests: XCTestCase {
 			)
 		}
 	}
-
-	// MARK: -
-	static var allTests = [
-		("testPathResolving", testPathResolving),
-		("testRegexCompilation", testRegexCompilation),
-		("testCorrectMatches", testCorrectMatches),
-		("testIncorrectMatches", testIncorrectMatches),
-		("testPathVariables", testPathVariables),
-		("testNavigationAction", testNavigationAction),
-	]
 }
