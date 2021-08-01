@@ -73,8 +73,9 @@ public final class Navigator: ObservableObject {
 		}
 	
 		forwardStack.removeAll()
+
 		if replace {
-			historyStack[historyStack.indices.endIndex] = path
+			historyStack[historyStack.endIndex - 1] = path
 		}
 		else {
 			historyStack.append(path)
@@ -92,6 +93,10 @@ public final class Navigator: ObservableObject {
 	///
 	/// - Parameter total: Total steps to go back.
 	public func goBack(total: Int = 1) {
+		guard canGoBack else {
+			return
+		}
+
 		let previousPath = path
 
 		let total = min(total, historyStack.count)
@@ -111,6 +116,10 @@ public final class Navigator: ObservableObject {
 	///
 	/// - Parameter total: Total steps to go forward.
 	public func goForward(total: Int = 1) {
+		guard canGoForward else {
+			return
+		}
+
 		let previousPath = path
 
 		let total = min(total, forwardStack.count)
