@@ -16,7 +16,7 @@ import SwiftUI
 /// @EnvironmentObject var navigator: Navigator
 /// ```
 public final class Navigator: ObservableObject {
-    
+
 	@Published private var historyStack: [String]
 	@Published private var forwardStack: [String] = []
 	
@@ -47,8 +47,8 @@ public final class Navigator: ObservableObject {
 	// MARK: Methods.
 	/// Navigate to a new location.
 	///
-	/// The given path (`to`) is always relative to the current environment path.
-	/// This means you can use `/` to navigate using an absolute path and `../` to go up a directory.
+	/// The given path is always relative to the current environment path.
+	/// This means you can use `/` to navigate using an absolute path and `..` to go up a directory.
 	///
 	/// ```swift
 	/// navigator.navigate("news") // Relative.
@@ -152,7 +152,7 @@ extension Navigator: Equatable {
 /// Information about a navigation that occurred.
 public struct NavigationAction: Equatable {
 	/// Directional difference between the current path and the previous path.
-    public enum Direction: Equatable {
+	public enum Direction: Equatable {
 		/// The new path is higher up in the hierarchy *or* a completely different path.
 		case higher
 		/// The new path is deeper in the hierarchy.
@@ -162,7 +162,7 @@ public struct NavigationAction: Equatable {
 	}
 	
 	/// The kind of navigation that occurred.
-    public enum Action: Equatable {
+	public enum Action: Equatable {
 		/// Navigated to a new path.
 		case push
 		/// Navigated back in the stack.
