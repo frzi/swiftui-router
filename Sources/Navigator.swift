@@ -5,6 +5,14 @@
 
 import SwiftUI
 
+extension Navigator {
+    public static func == (lhs: Navigator, rhs: Navigator) -> Bool {
+        lhs.path == rhs.path
+            && lhs.historyStack == rhs.historyStack
+            && lhs.lastAction == rhs.lastAction
+    }
+}
+
 /// EnvironmentObject storing the state of a Router.
 ///
 /// Use this object to pragmatically navigate to a new path, jump forward or back in the history, to clear the
@@ -15,8 +23,8 @@ import SwiftUI
 /// ```swift
 /// @EnvironmentObject var navigator: Navigator
 /// ```
-public final class Navigator: ObservableObject {
-	
+public final class Navigator: ObservableObject, Equatable {
+    
 	@Published private var historyStack: [String]
 	@Published private var forwardStack: [String] = []
 	
@@ -144,9 +152,9 @@ public final class Navigator: ObservableObject {
 
 // MARK: -
 /// Information about a navigation that occurred.
-public struct NavigationAction {
+public struct NavigationAction: Equatable {
 	/// Directional difference between the current path and the previous path.
-	public enum Direction {
+    public enum Direction: Equatable {
 		/// The new path is higher up in the hierarchy *or* a completely different path.
 		case higher
 		/// The new path is deeper in the hierarchy.
@@ -156,7 +164,7 @@ public struct NavigationAction {
 	}
 	
 	/// The kind of navigation that occurred.
-	public enum Action {
+    public enum Action: Equatable {
 		/// Navigated to a new path.
 		case push
 		/// Navigated back in the stack.
