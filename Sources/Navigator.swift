@@ -7,9 +7,7 @@ import SwiftUI
 
 extension Navigator {
     public static func == (lhs: Navigator, rhs: Navigator) -> Bool {
-        lhs.path == rhs.path
-            && lhs.historyStack == rhs.historyStack
-            && lhs.lastAction == rhs.lastAction
+       return lhs === rhs
     }
 }
 

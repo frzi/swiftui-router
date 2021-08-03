@@ -5,24 +5,21 @@ final class SwiftUIRouterTests: XCTestCase {
     
     /// Test equitability of navigator
     func testNavigatorIsEquatable() {
-        // 1. Equal with same path and history
         let nav1 = Navigator(initialPath: "/")
-        let nav2 = Navigator(initialPath: "/")
-        XCTAssertEqual(nav1, nav2)
-        
-        // 2. NOT equal with different path
+        let nav2: Navigator = nav1
+        // 1.
         nav1.navigate("/foo")
-        XCTAssertNotEqual(nav1, nav2)
-        
-        // 3. NOT equal with different history
+        XCTAssertEqual(nav1, nav2)
+        // 2.
         nav1.goBack()
-        XCTAssertNotEqual(nav1, nav2)
-        
-        // 3. Equal with same history
+        XCTAssertEqual(nav1, nav2)
+        // 3.
         nav2.navigate("/foo")
         nav2.goBack() // => "/"
         XCTAssertEqual(nav1, nav2)
         
+        let nav3 = Navigator(initialPath: "/")
+        XCTAssertNotEqual(nav1, nav3)
     }
 
 	/// Test cleaning/resolving of paths.
