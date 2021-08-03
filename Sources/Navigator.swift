@@ -5,15 +5,9 @@
 
 import SwiftUI
 
-extension Navigator {
-    public static func == (lhs: Navigator, rhs: Navigator) -> Bool {
-       return lhs === rhs
-    }
-}
-
 /// EnvironmentObject storing the state of a Router.
 ///
-/// Use this object to pragmatically navigate to a new path, jump forward or back in the history, to clear the
+/// Use this object to programmatically navigate to a new path, jump forward or back in the history, to clear the
 /// history, or to find out whether the user can go back or forward.
 ///
 /// - Note: This EnvironmentObject is available in all children of a `Router`.
@@ -21,7 +15,7 @@ extension Navigator {
 /// ```swift
 /// @EnvironmentObject var navigator: Navigator
 /// ```
-public final class Navigator: ObservableObject, Equatable {
+public final class Navigator: ObservableObject {
     
 	@Published private var historyStack: [String]
 	@Published private var forwardStack: [String] = []
@@ -29,7 +23,7 @@ public final class Navigator: ObservableObject, Equatable {
 	/// Last navigation that occurred.
 	@Published public private(set) var lastAction: NavigationAction?
 	
-	let initialPath: String
+	private let initialPath: String
 		
 	init(initialPath: String = "/") {
 		self.initialPath = initialPath
@@ -144,6 +138,12 @@ public final class Navigator: ObservableObject, Equatable {
 		forwardStack.removeAll()
 		historyStack = [path]
 		lastAction = nil
+	}
+}
+
+extension Navigator: Equatable {
+	public static func == (lhs: Navigator, rhs: Navigator) -> Bool {
+		lhs === rhs
 	}
 }
 
