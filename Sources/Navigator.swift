@@ -152,7 +152,7 @@ extension Navigator: Equatable {
 /// Information about a navigation that occurred.
 public struct NavigationAction: Equatable {
 	/// Directional difference between the current path and the previous path.
-	public enum Direction: Equatable {
+	public enum Direction {
 		/// The new path is higher up in the hierarchy *or* a completely different path.
 		case higher
 		/// The new path is deeper in the hierarchy.
@@ -162,7 +162,7 @@ public struct NavigationAction: Equatable {
 	}
 	
 	/// The kind of navigation that occurred.
-	public enum Action: Equatable {
+	public enum Action {
 		/// Navigated to a new path.
 		case push
 		/// Navigated back in the stack.

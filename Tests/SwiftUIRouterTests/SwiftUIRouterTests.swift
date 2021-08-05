@@ -21,6 +21,20 @@ final class SwiftUIRouterTests: XCTestCase {
 		
 		let nav3 = Navigator(initialPath: "/")
 		XCTAssertNotEqual(nav1, nav3)
+		
+		// Test if navigation actions are equatable.
+		nav2.navigate("/foo")
+		nav3.navigate("/foo")
+		XCTAssertTrue(
+			nav2.lastAction == nav3.lastAction,
+			"Both navigation actions to /foo are not equal."
+		)
+		
+		nav3.goBack()
+		XCTAssertTrue(
+			nav2.lastAction != nav3.lastAction,
+			"Different navigation actions are still equal."
+		)
 	}
 
 	/// Test cleaning/resolving of paths.
