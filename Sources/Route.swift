@@ -203,8 +203,8 @@ final class PathMatcher: ObservableObject {
 				#if DEBUG
 				// In debug mode perform an extra check whether parameters contain invalid characters or
 				// whether the parameters starts with something besides a letter.
-				if let range = variable.range(of: "(^[^A-Za-z]|[^A-Za-z0-9])", options: .regularExpression) {
-					throw CompileError.badParameter(variable, culprit: String(variable[range]))
+				if let r = variable.range(of: "(^[^a-z]|[^a-z0-9])", options: [.regularExpression, .caseInsensitive]) {
+					throw CompileError.badParameter(variable, culprit: String(variable[r]))
 				}
 				#endif
 				
