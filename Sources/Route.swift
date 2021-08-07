@@ -109,9 +109,7 @@ public struct Route<ValidatedData, Content: View>: View {
 			}
 			catch {
 				print("Unable to compile path glob '\(path)' to Regex.")
-				#if DEBUG
 				fatalError(error.localizedDescription)
-				#endif
 			}
 		}
 
@@ -170,15 +168,17 @@ public final class RouteInformation: ObservableObject {
 /// Object that will (lazily) compile regex from the given path glob, compare it with another path and return
 /// any parsed information (like identifiers).
 final class PathMatcher: ObservableObject {
-	
-	// Alternatively use the pattern :([A-Za-z]+[A-Za-z0-9]*),
-	// but will prevent throwing an error on bad patterns.
+
 	private static let variablesRegex = try! NSRegularExpression(pattern: #":([^\/\?]+)"#, options: [])
 
 	private struct CompiledRegex {
 		let path: String
 		let matchRegex: NSRegularExpression
 		let parameters: Set<String>
+	}
+	
+	enum CompileError: Error {
+		case badParameter(String, culprit: String)
 	}
 
 	private var cached: CompiledRegex?
@@ -198,7 +198,17 @@ final class PathMatcher: ObservableObject {
 
 		for match in variableMatches where match.numberOfRanges > 1 {
 			if let range = Range(match.range(at: 1), in: glob) {
-				variables.insert(String(glob[range]))
+				let variable = String(glob[range])
+
+				#if DEBUG
+				// In debug mode perform an extra check whether parameters contain invalid characters or
+				// whether the parameters starts with something besides a letter.
+				if let range = variable.range(of: "(^[^A-Za-z]|[^A-Za-z0-9])", options: .regularExpression) {
+					throw CompileError.badParameter(variable, culprit: String(variable[range]))
+				}
+				#endif
+				
+				variables.insert(variable)
 			}
 		}
 

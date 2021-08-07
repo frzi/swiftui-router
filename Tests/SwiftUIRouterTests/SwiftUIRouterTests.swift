@@ -148,7 +148,7 @@ final class SwiftUIRouterTests: XCTestCase {
 			"/:id?",
 			"/:id1/:id2",
 			"/:id1/:id2?",
-			"/:id/*",
+			"/:Movie/*",
 			"/:i", // Single character.
 		]
 		
@@ -164,6 +164,7 @@ final class SwiftUIRouterTests: XCTestCase {
 			"/:0abc", // Starting with numerics.
 			"/:user-id", // Illegal characters.
 			"/:foo_bar",
+			"/:😀"
 		]
 		
 		for glob in badGlobs {
