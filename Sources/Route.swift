@@ -16,6 +16,19 @@ import SwiftUI
 /// }
 /// ```
 ///
+/// ## Path parameters (aka placeholders)
+/// Paths may contain one or several parameters. Parameters are placeholders that will be replaced by the
+/// corresponding component of the matching path. Parameters are prefixed with a colon (:). The values of the
+/// parameters are provided via the `RouteInformation` object passed to the contents of the `Route`.
+/// Parameters can be marked as optional by postfixing them with a question mark (?).
+///
+/// **Note:** Only alphanumeric characters (A-Z, a-z, 0-9) are valid for parameters.
+/// ```swift
+/// Route("/news/:id") { routeInfo in
+/// 	NewsItemView(id: routeInfo.parameters["id"]!)
+/// }
+/// ```
+///
 /// ## Validation and parameter transform
 /// `Route`s are given the opportunity to add an extra layer of validation. Use the `validator` argument to pass
 /// down a validator function. This function is given a `RouteInformation` object, containing the path parameters.
@@ -82,15 +95,23 @@ public struct Route<ValidatedData, Content: View>: View {
 		var routeInformation: RouteInformation?
 
 		if !switchEnvironment.isActive || (switchEnvironment.isActive && !switchEnvironment.isResolved) {
-			if let matchInformation = try? pathMatcher.match(glob: resolvedGlob, with: navigator.path),
-			   let validated = validator(matchInformation)
-			{
-				validatedData = validated
-				routeInformation = matchInformation
-				
-				if switchEnvironment.isActive {
-					switchEnvironment.isResolved = true
+			do {
+				if let matchInformation = try pathMatcher.match(glob: resolvedGlob, with: navigator.path),
+				   let validated = validator(matchInformation)
+				{
+					validatedData = validated
+					routeInformation = matchInformation
+					
+					if switchEnvironment.isActive {
+						switchEnvironment.isResolved = true
+					}
 				}
+			}
+			catch {
+				print("Unable to compile path glob to Regex.")
+				#if DEBUG
+				fatalError(error.localizedDescription)
+				#endif
 			}
 		}
 
@@ -149,6 +170,10 @@ public final class RouteInformation: ObservableObject {
 /// Object that will (lazily) compile regex from the given path glob, compare it with another path and return
 /// any parsed information (like identifiers).
 final class PathMatcher: ObservableObject {
+	
+	// Alternatively use the pattern :([A-Za-z]+[A-Za-z0-9]*),
+	// but will prevent throwing an error on bad patterns.
+	private static let variablesRegex = try! NSRegularExpression(pattern: #":([^\/\?]+)"#, options: [])
 
 	private struct CompiledRegex {
 		let path: String
@@ -169,8 +194,7 @@ final class PathMatcher: ObservableObject {
 		var variables = Set<String>()
 
 		let nsrange = NSRange(glob.startIndex..<glob.endIndex, in: glob)
-		let variablesRegex = try NSRegularExpression(pattern: #":([^\/\?]+)"#, options: [])
-		let variableMatches = variablesRegex.matches(in: glob, options: [], range: nsrange)
+		let variableMatches = Self.variablesRegex.matches(in: glob, options: [], range: nsrange)
 
 		for match in variableMatches where match.numberOfRanges > 1 {
 			if let range = Range(match.range(at: 1), in: glob) {
@@ -201,7 +225,7 @@ final class PathMatcher: ObservableObject {
 
 		return cached!
 	}
-	
+
 	func match(glob: String, with path: String) throws -> RouteInformation? {
 		let compiled = try compileRegex(glob)
 		
@@ -236,9 +260,6 @@ final class PathMatcher: ObservableObject {
 		
 		let resolvedGlob = String(path[range])
 		
-		return RouteInformation(
-			path: resolvedGlob,
-			parameters: parameterValues
-		)
+		return RouteInformation(path: resolvedGlob, parameters: parameterValues)
 	}
 }

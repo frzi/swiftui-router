@@ -149,12 +149,27 @@ final class SwiftUIRouterTests: XCTestCase {
 			"/:id1/:id2",
 			"/:id1/:id2?",
 			"/:id/*",
+			"/:i", // Single character.
 		]
 		
 		for glob in goodGlobs {
 			XCTAssertNoThrow(
 				try pathMatcher.match(glob: glob, with: ""),
 				"Glob \(glob) causes bad Regex." 
+			)
+		}
+		
+		// These bad globs should throw at Regex compilation.
+		let badGlobs: [String] = [
+			"/:0", // Starting with numerics.
+			"/:user-id", // Illegal characters.
+			"/:foo_bar",
+		]
+		
+		for glob in badGlobs {
+			XCTAssertThrowsError(
+				try pathMatcher.match(glob: glob, with: ""),
+				"Glob \(glob) should've thrown an error, but didn't."
 			)
 		}
 	}
