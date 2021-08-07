@@ -161,7 +161,7 @@ final class SwiftUIRouterTests: XCTestCase {
 		
 		// These bad globs should throw at Regex compilation.
 		let badGlobs: [String] = [
-			"/:0", // Starting with numerics.
+			"/:0abc", // Starting with numerics.
 			"/:user-id", // Illegal characters.
 			"/:foo_bar",
 		]

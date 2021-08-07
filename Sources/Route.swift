@@ -108,7 +108,7 @@ public struct Route<ValidatedData, Content: View>: View {
 				}
 			}
 			catch {
-				print("Unable to compile path glob to Regex.")
+				print("Unable to compile path glob '\(path)' to Regex.")
 				#if DEBUG
 				fatalError(error.localizedDescription)
 				#endif
