@@ -174,7 +174,7 @@ final class PathMatcher: ObservableObject {
 		let parameters: Set<String>
 	}
 	
-	public enum CompileError: Error {
+	private enum CompileError: Error {
 		case badParameter(String, culprit: String)
 	}
 	
