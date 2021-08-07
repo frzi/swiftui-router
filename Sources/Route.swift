@@ -109,7 +109,8 @@ public struct Route<ValidatedData, Content: View>: View {
 			}
 			catch {
 				print("Unable to compile path glob '\(path)' to Regex.")
-				fatalError(error.localizedDescription)
+				print(error.localizedDescription)
+				fatalError()
 			}
 		}
 
@@ -169,17 +170,19 @@ public final class RouteInformation: ObservableObject {
 /// any parsed information (like identifiers).
 final class PathMatcher: ObservableObject {
 
-	private static let variablesRegex = try! NSRegularExpression(pattern: #":([^\/\?]+)"#, options: [])
-
 	private struct CompiledRegex {
 		let path: String
 		let matchRegex: NSRegularExpression
 		let parameters: Set<String>
 	}
 	
-	enum CompileError: Error {
+	fileprivate enum CompileError: Error {
 		case badParameter(String, culprit: String)
 	}
+	
+	private static let variablesRegex = try! NSRegularExpression(pattern: #":([^\/\?]+)"#, options: [])
+
+	//
 
 	private var cached: CompiledRegex?
 	
