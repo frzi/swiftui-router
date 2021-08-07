@@ -63,7 +63,8 @@ Route(path: "user/:id?") { info in
 A view that will only render its contents if its path matches that of the environment. Use `/*` to also match deeper paths. E.g.: the path `news/*` will match the following environment paths: `/news`, `/news/latest`, `/news/article/1` etc.
 
 #### Parameters
-Paths can contain parameters (aka variables) that can be read individually. A parameter's name is prefixed with a colon (`:`). Additionally, a parameter can be considered optional by suffixing it with a question mark (`?`). The parameters are passed down as a `[String : String]` in an `RouteInformation` object to a `Route`'s contents.
+Paths can contain parameters (aka placeholders) that can be read individually. A parameter's name is prefixed with a colon (`:`). Additionally, a parameter can be considered optional by suffixing it with a question mark (`?`). The parameters are passed down as a `[String : String]` in an `RouteInformation` object to a `Route`'s contents.  
+**Note**: Parameters may only exist of alphanumeric characters (A-Z, a-z and 0-9) and *must* start with a letter.
 
 #### Parameter validation
 ```swift
