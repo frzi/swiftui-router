@@ -108,9 +108,7 @@ public struct Route<ValidatedData, Content: View>: View {
 				}
 			}
 			catch {
-				print("Unable to compile path glob '\(path)' to Regex.")
-				print(error.localizedDescription)
-				fatalError()
+				fatalError("Unable to compile path glob '\(path)' to Regex. Error: \(error)")
 			}
 		}
 
@@ -176,7 +174,7 @@ final class PathMatcher: ObservableObject {
 		let parameters: Set<String>
 	}
 	
-	fileprivate enum CompileError: Error {
+	public enum CompileError: Error {
 		case badParameter(String, culprit: String)
 	}
 	
