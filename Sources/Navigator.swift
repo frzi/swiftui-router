@@ -25,10 +25,10 @@ public final class Navigator: ObservableObject {
 	
 	private let initialPath: String
 		
-	init(initialPath: String = "/") {
-		self.initialPath = initialPath
-		self.historyStack = [initialPath]
-	}
+    public init(initialPath: String = "/") {
+        self.initialPath = initialPath
+        self.historyStack = [initialPath]
+    }
 
 	// MARK: Getters.
 	/// Current navigation path of the Router environment.
