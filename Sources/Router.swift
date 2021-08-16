@@ -39,6 +39,14 @@ public struct Router<Content: View>: View {
 		self.content = content()
 	}
 	
+	/// Initialize a Router environment.
+	/// - Parameter navigator: A pre-initialized instance of `Navigator`.
+	/// - Parameter content: Content views to render inside the Router environment.
+	public init(navigator: Navigator, @ViewBuilder content: () -> Content) {
+		_navigator = StateObject(wrappedValue: navigator)
+		self.content = content()
+	}
+	
 	public var body: some View {
 		content
 			.environmentObject(navigator)

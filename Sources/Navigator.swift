@@ -24,8 +24,10 @@ public final class Navigator: ObservableObject {
 	@Published public private(set) var lastAction: NavigationAction?
 	
 	private let initialPath: String
-		
-	init(initialPath: String = "/") {
+	
+	/// Initialize a `Navigator` manually to be fed to `Router` manually.
+	/// - Parameter initialPath: The initial path the `Navigator` should start at once initialized.
+	public init(initialPath: String = "/") {
 		self.initialPath = initialPath
 		self.historyStack = [initialPath]
 	}
