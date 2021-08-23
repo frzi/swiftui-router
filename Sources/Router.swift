@@ -40,6 +40,12 @@ public struct Router<Content: View>: View {
 	}
 	
 	/// Initialize a Router environment.
+	///
+	/// Provide an already initialized instance of `Navigator` to use inside a Router environment.
+	///
+	/// - Important: This is considered an advanced usecase for *SwiftUI Router* used only for specific design patterns.
+	/// It is stronlgy adviced to use the `init(initialPath:content:)` initializer instead.
+	///
 	/// - Parameter navigator: A pre-initialized instance of `Navigator`.
 	/// - Parameter content: Content views to render inside the Router environment.
 	public init(navigator: Navigator, @ViewBuilder content: () -> Content) {

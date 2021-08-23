@@ -33,7 +33,7 @@ public struct SwitchRoutes<Content: View>: View {
 	// Required to be present, forcing the `SwitchRoutes` to re-render on path changes.
 	@EnvironmentObject private var navigation: Navigator
 	private let contents: () -> Content
-	
+
 	/// - Parameter contents: Routes to switch through.
 	public init(@ViewBuilder contents: @escaping () -> Content) {
 		self.contents = contents
@@ -47,10 +47,10 @@ public struct SwitchRoutes<Content: View>: View {
 
 // MARK: - SwitchRoutes environment object.
 final class SwitchRoutesEnvironment: ObservableObject {
-	/// Tells `Route`s whether to they're enclosed in a `SwitchRoutes`.
+	/// Tells `Route`s whether they're enclosed in a `SwitchRoutes`.
 	let isActive: Bool
 	
-	/// Tells `Route`s they can ignore the content, as a `SwitchRoutes` has found a match.
+	/// Tells `Route`s they can ignore the content as a `SwitchRoutes` has found a match.
 	var isResolved = false
 	
 	init(active: Bool = false) {
