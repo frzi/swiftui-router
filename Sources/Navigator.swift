@@ -154,10 +154,11 @@ public struct NavigationAction: Equatable {
 	/// Directional difference between the current path and the previous path.
 	public enum Direction {
 		/// The new path is higher up in the hierarchy *or* a completely different path.
+		/// Example: `/user/settings` → `/user`. Or `/favorite/music` → `/news/latest`.
 		case higher
-		/// The new path is deeper in the hierarchy.
+		/// The new path is deeper in the hierarchy. Example: `/news` → `/news/latest`.
 		case deeper
-		/// The new path shares the same parent.
+		/// The new path shares the same parent. Example: `/favorite/movies` → `/favorite/music`.
 		case sideways
 	}
 	
