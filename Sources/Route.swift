@@ -143,11 +143,11 @@ public extension Route where ValidatedData == RouteInformation {
 	}
 	
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
-	/// - Parameter body: View to render.
-	init(path: String = "*", body: @autoclosure @escaping () -> Content) {
+	/// - Parameter content: View to render (autoclosure).
+	init(path: String = "*", content: @autoclosure @escaping () -> Content) {
 		self.path = path
 		self.validator = { $0 }
-		self.content = { _ in body() }
+		self.content = { _ in content() }
 	}
 }
 
