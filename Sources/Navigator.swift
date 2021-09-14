@@ -24,8 +24,16 @@ public final class Navigator: ObservableObject {
 	@Published public private(set) var lastAction: NavigationAction?
 	
 	private let initialPath: String
-		
-	init(initialPath: String = "/") {
+	
+	/// Initialize a `Navigator` to be fed to `Router` manually.
+	///
+	/// Initialize an instance of `Navigator` to keep a reference to outside of the SwiftUI lifecycle.
+	///
+	/// - Important: This is considered an advanced usecase for *SwiftUI Router* used for specific design patterns.
+	/// It is strongly advised to reference the `Navigator` via the provided Environment Object instead.
+	///
+	/// - Parameter initialPath: The initial path the `Navigator` should start at once initialized.
+	public init(initialPath: String = "/") {
 		self.initialPath = initialPath
 		self.historyStack = [initialPath]
 	}
