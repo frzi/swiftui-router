@@ -1,6 +1,6 @@
 //
 //  SwiftUI Router
-//  Created by Freek Zijlmans on 13/01/2021.
+//  Created by Freek (github.com/frzi) 2021
 //
 
 import Combine

@@ -1,6 +1,6 @@
 //
 //  SwiftUI Router
-//  Created by Freek Zijlmans on 13/01/2021.
+//  Created by Freek (github.com/frzi) 2021
 //
 
 import SwiftUI
@@ -28,7 +28,6 @@ public struct Navigate: View {
 	@Environment(\.relativePath) private var relativePath
 
 	private let path: String
-
 	private let replace: Bool
 
 	/// - Parameter path: New path to navigate to once the View is rendered.

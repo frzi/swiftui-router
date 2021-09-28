@@ -1,12 +1,12 @@
 //
 //  SwiftUI Router
-//  Created by Freek Zijlmans on 13/01/2021.
+//  Created by Freek (github.com/frzi) 2021
 //
 
 import Foundation
 import SwiftUI
 
-/// A route showing only its children when its path matches with the environment path.
+/// A route showing only its content when its path matches with the environment path.
 ///
 /// When the environment path matches a `Route`'s path, its contents will be rendered.
 ///
