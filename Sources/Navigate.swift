@@ -28,10 +28,13 @@ public struct Navigate: View {
 	@Environment(\.relativePath) private var relativePath
 
 	private let path: String
-	
+
+	private let replace: Bool
+
 	/// - Parameter path: New path to navigate to once the View is rendered.
-	public init(to path: String) {
+	public init(to path: String, replace: Bool = true) {
 		self.path = path
+		self.replace = replace
 	}
 
 	public var body: some View {
@@ -39,7 +42,7 @@ public struct Navigate: View {
 			.hidden()
 			.onAppear {
 				if navigator.path != path {
-					navigator.navigate(resolvePaths(relativePath, path), replace: true)
+					navigator.navigate(resolvePaths(relativePath, path), replace: replace)
 				}
 			}
 	}
