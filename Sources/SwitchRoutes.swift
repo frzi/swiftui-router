@@ -12,10 +12,10 @@ import SwiftUI
 ///
 /// ```swift
 /// SwitchRoutes {
-/// 	Route(path: "settings") {
+/// 	Route("settings") {
 /// 		SettingsView()
 /// 	}
-/// 	Route(path: ":id") { info in
+/// 	Route(":id") { info in
 /// 		ContentView(id: info.params.id!)
 /// 	}
 /// 	Route {

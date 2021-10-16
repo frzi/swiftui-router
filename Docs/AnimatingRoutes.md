@@ -39,7 +39,7 @@ extension View {
 
 The modifier can be applied to `Route` views:
 ```swift
-Route(path: "news") {
+Route("news") {
 	NewsScreen()
 }
 .navigationTransition()
@@ -48,10 +48,10 @@ Route(path: "news") {
 The modifier can also be applied to a `SwitchRoutes`. This will apply the animated transition to all `Route` views inside the `SwitchRoutes`.
 ```swift
 SwitchRoutes {
-	Route(path: "news/:id", validator: newsIdValidator) { uuid in
+	Route("news/:id", validator: newsIdValidator) { uuid in
 		NewsItemScreen(uuid: uuid)
 	}
-	Route(path: "news") {
+	Route("news") {
 		NewsScreen()
 	}
 	Route {

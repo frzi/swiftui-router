@@ -11,7 +11,7 @@ import SwiftUI
 /// When the environment path matches a `Route`'s path, its contents will be rendered.
 ///
 /// ```swift
-/// Route(path: "settings") {
+/// Route("settings") {
 /// 	SettingsView()
 /// }
 /// ```
@@ -24,7 +24,7 @@ import SwiftUI
 ///
 /// **Note:** Only alphanumeric characters (A-Z, a-z, 0-9) are valid for parameters.
 /// ```swift
-/// Route(path: "/news/:id") { routeInfo in
+/// Route("/news/:id") { routeInfo in
 /// 	NewsItemView(id: routeInfo.parameters["id"]!)
 /// }
 /// ```
@@ -39,7 +39,7 @@ import SwiftUI
 /// 	UUID(info.parameters["uuid"]!)
 /// }
 /// // Will only render if `uuid` is a valid UUID.
-/// Route(path: "user/:uuid", validator: validate) { uuid in
+/// Route("user/:uuid", validator: validate) { uuid in
 /// 	UserScreen(userId: uuid)
 /// }
 /// ```
@@ -48,13 +48,13 @@ import SwiftUI
 /// Every path found in a `Route`'s hierarchy is relative to the path of said `Route`. With the exception of paths
 /// starting with `/`. This allows you to develop parts of your app more like separate 'sub' apps.
 /// ```swift
-/// Route(path: "/news") {
+/// Route("/news") {
 /// 	// Goes to `/news/latest`
 /// 	NavLink(to: "latest") { Text("Latest news") }
 /// 	// Goes to `/home`
 /// 	NavLink(to: "/home") { Text("Home") }
 /// 	// Route for `/news/unknown/*`
-/// 	Route(path: "unknown/*") {
+/// 	Route("unknown/*") {
 /// 		// Redirects to `/news/error`
 /// 		Navigate(to: "../error")
 /// 	}
@@ -79,7 +79,7 @@ public struct Route<ValidatedData, Content: View>: View {
 	/// - Parameter validator: A function that validates and transforms the route parameters.
 	/// - Parameter content: Views to render. The validated data is passed as an argument.
 	public init(
-		path: String = "*",
+		_ path: String = "*",
 		validator: @escaping Validator,
 		@ViewBuilder content: @escaping (ValidatedData) -> Content
 	) {
@@ -128,7 +128,7 @@ public struct Route<ValidatedData, Content: View>: View {
 public extension Route where ValidatedData == RouteInformation {
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
 	/// - Parameter content: Views to render. An `RouteInformation` is passed containing route parameters.
-	init(path: String = "*", @ViewBuilder content: @escaping (RouteInformation) -> Content) {
+	init(_ path: String = "*", @ViewBuilder content: @escaping (RouteInformation) -> Content) {
 		self.path = path
 		self.validator = { $0 }
 		self.content = content
@@ -136,7 +136,7 @@ public extension Route where ValidatedData == RouteInformation {
 	
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
 	/// - Parameter content: Views to render.
-	init(path: String = "*", @ViewBuilder content: @escaping () -> Content) {
+	init(_ path: String = "*", @ViewBuilder content: @escaping () -> Content) {
 		self.path = path
 		self.validator = { $0 }
 		self.content = { _ in content() }
@@ -144,7 +144,7 @@ public extension Route where ValidatedData == RouteInformation {
 	
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
 	/// - Parameter content: View to render (autoclosure).
-	init(path: String = "*", content: @autoclosure @escaping () -> Content) {
+	init(_ path: String = "*", content: @autoclosure @escaping () -> Content) {
 		self.path = path
 		self.validator = { $0 }
 		self.content = { _ in content() }

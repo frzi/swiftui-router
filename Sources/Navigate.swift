@@ -11,7 +11,7 @@ import SwiftUI
 ///
 /// ```swift
 /// SwitchRoutes {
-/// 	Route(path: "news") { NewsView() }
+/// 	Route("news") { NewsView() }
 /// 	Route {
 /// 		// If this Route gets rendered redirect
 /// 		// the user to a 'not found' screen.
