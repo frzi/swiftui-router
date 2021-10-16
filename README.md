@@ -5,7 +5,7 @@
 ![SwiftUI](https://img.shields.io/github/v/release/frzi/SwiftUIRouter?style=for-the-badge)
 [![SwiftUI](https://img.shields.io/badge/SwiftUI-blue.svg?style=for-the-badge&logo=swift&logoColor=black)](https://developer.apple.com/xcode/swiftui)
 [![Swift](https://img.shields.io/badge/Swift-5.3-orange.svg?style=for-the-badge&logo=swift)](https://swift.org)
-[![Xcode](https://img.shields.io/badge/Xcode-12.4-blue.svg?style=for-the-badge&logo=Xcode&logoColor=white)](https://developer.apple.com/xcode)
+[![Xcode](https://img.shields.io/badge/Xcode-13-blue.svg?style=for-the-badge&logo=Xcode&logoColor=white)](https://developer.apple.com/xcode)
 [![MIT](https://img.shields.io/badge/license-MIT-black.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 With **SwiftUI Router** you can power your SwiftUI app with path based routing. By utilizing a path based system, navigation in your app becomes more flexible and easier to maintain.
@@ -17,7 +17,7 @@ With **SwiftUI Router** you can power your SwiftUI app with path based routing. 
 * [License](#license-)
 
 ## Installation 🛠
-In Xcode add the dependency to your project via *File > Swift Packages > Add Package Dependency...* and use the following url:
+In Xcode add the dependency to your project via *File > Add Packages > Search or Enter Package URL* and use the following url:
 ```
 https://github.com/frzi/SwiftUIRouter.git
 ```

@@ -24,7 +24,7 @@ import SwiftUI
 ///
 /// **Note:** Only alphanumeric characters (A-Z, a-z, 0-9) are valid for parameters.
 /// ```swift
-/// Route("/news/:id") { routeInfo in
+/// Route(path: "/news/:id") { routeInfo in
 /// 	NewsItemView(id: routeInfo.parameters["id"]!)
 /// }
 /// ```
@@ -48,13 +48,13 @@ import SwiftUI
 /// Every path found in a `Route`'s hierarchy is relative to the path of said `Route`. With the exception of paths
 /// starting with `/`. This allows you to develop parts of your app more like separate 'sub' apps.
 /// ```swift
-/// Route("/news") {
+/// Route(path: "/news") {
 /// 	// Goes to `/news/latest`
 /// 	NavLink(to: "latest") { Text("Latest news") }
 /// 	// Goes to `/home`
 /// 	NavLink(to: "/home") { Text("Home") }
 /// 	// Route for `/news/unknown/*`
-/// 	Route("unknown/*") {
+/// 	Route(path: "unknown/*") {
 /// 		// Redirects to `/news/error`
 /// 		Navigate(to: "../error")
 /// 	}
