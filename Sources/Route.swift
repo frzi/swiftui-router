@@ -87,6 +87,15 @@ public struct Route<ValidatedData, Content: View>: View {
 		self.path = path
 		self.validator = validator
 	}
+	
+	@available(*, deprecated, renamed: "init(_:validator:content:)")
+	public init(
+		path: String,
+		validator: @escaping Validator,
+		@ViewBuilder content: @escaping (ValidatedData) -> Content
+	) {
+		self.init(path, validator: validator, content: content)
+	}
 
 	public var body: some View {
 		let resolvedGlob = resolvePaths(relativePath, path)
@@ -148,6 +157,22 @@ public extension Route where ValidatedData == RouteInformation {
 		self.path = path
 		self.validator = { $0 }
 		self.content = { _ in content() }
+	}
+	
+	// MARK: Deprecated initializers.
+	@available(*, deprecated, renamed: "init(_:content:)")
+	init(path: String, @ViewBuilder content: @escaping (RouteInformation) -> Content) {
+		self.init(path, content: content)
+	}
+	
+	@available(*, deprecated, renamed: "init(_:content:)")
+	init(path: String, @ViewBuilder content: @escaping () -> Content) {
+		self.init(path, content: content)
+	}
+	
+	@available(*, deprecated, renamed: "init(_:content:)")
+	init(path: String, content: @autoclosure @escaping () -> Content) {
+		self.init(path, content: content)
 	}
 }
 
