@@ -87,7 +87,7 @@ public struct Route<ValidatedData, Content: View>: View {
 		self.path = path
 		self.validator = validator
 	}
-	
+
 	@available(*, deprecated, renamed: "init(_:validator:content:)")
 	public init(
 		path: String,
@@ -158,18 +158,19 @@ public extension Route where ValidatedData == RouteInformation {
 		self.validator = { $0 }
 		self.content = { _ in content() }
 	}
-	
-	// MARK: Deprecated initializers.
+
+	// MARK: - Deprecated initializers.
+	// These will be completely removed in a future version.
 	@available(*, deprecated, renamed: "init(_:content:)")
 	init(path: String, @ViewBuilder content: @escaping (RouteInformation) -> Content) {
 		self.init(path, content: content)
 	}
-	
+
 	@available(*, deprecated, renamed: "init(_:content:)")
 	init(path: String, @ViewBuilder content: @escaping () -> Content) {
 		self.init(path, content: content)
 	}
-	
+
 	@available(*, deprecated, renamed: "init(_:content:)")
 	init(path: String, content: @autoclosure @escaping () -> Content) {
 		self.init(path, content: content)
