@@ -7,13 +7,13 @@ import SwiftUI
 
 /// When rendered will automatically perform a navigation to the given path.
 ///
-/// This view allows you to pragmatically navigate to a new path in a View's body.
+/// This view allows you to programmatically navigate to a new path in a View's body.
 ///
 /// ```swift
 /// SwitchRoutes {
-/// 	Route("news") { NewsView() }
+/// 	Route("news", content: NewsView())
 /// 	Route {
-/// 		// If this Route gets rendered redirect
+/// 		// If this Route gets rendered it'll redirect
 /// 		// the user to a 'not found' screen.
 /// 		Navigate(to: "/not-found")
 /// 	}
