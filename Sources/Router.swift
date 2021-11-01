@@ -1,6 +1,6 @@
 //
 //  SwiftUI Router
-//  Created by Freek Zijlmans on 13/01/2021.
+//  Created by Freek (github.com/frzi) 2021
 //
 
 import Combine
@@ -15,7 +15,7 @@ import SwiftUI
 /// Router {
 /// 	HomeView()
 ///
-/// 	Route(path: "/news") {
+/// 	Route("/news") {
 /// 		NewsHeaderView()
 /// 	}
 /// }
@@ -36,6 +36,20 @@ public struct Router<Content: View>: View {
 	/// - Parameter content: Content views to render inside the Router environment.
 	public init(initialPath: String = "/", @ViewBuilder content: () -> Content) {
 		_navigator = StateObject(wrappedValue: Navigator(initialPath: initialPath))
+		self.content = content()
+	}
+	
+	/// Initialize a Router environment.
+	///
+	/// Provide an already initialized instance of `Navigator` to use inside a Router environment.
+	///
+	/// - Important: This is considered an advanced usecase for *SwiftUI Router* used only for specific design patterns.
+	/// It is stronlgy adviced to use the `init(initialPath:content:)` initializer instead.
+	///
+	/// - Parameter navigator: A pre-initialized instance of `Navigator`.
+	/// - Parameter content: Content views to render inside the Router environment.
+	public init(navigator: Navigator, @ViewBuilder content: () -> Content) {
+		_navigator = StateObject(wrappedValue: navigator)
 		self.content = content()
 	}
 	

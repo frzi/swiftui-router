@@ -1,13 +1,13 @@
 //
 //  SwiftUI Router
-//  Created by Freek Zijlmans on 16/02/2021.
+//  Created by Freek (github.com/frzi) 2021
 //
 
 import SwiftUI
 
 /// EnvironmentObject storing the state of a Router.
 ///
-/// Use this object to pragmatically navigate to a new path, jump forward or back in the history, to clear the
+/// Use this object to programmatically navigate to a new path, jump forward or back in the history, to clear the
 /// history, or to find out whether the user can go back or forward.
 ///
 /// - Note: This EnvironmentObject is available in all children of a `Router`.
@@ -16,16 +16,24 @@ import SwiftUI
 /// @EnvironmentObject var navigator: Navigator
 /// ```
 public final class Navigator: ObservableObject {
-	
+
 	@Published private var historyStack: [String]
 	@Published private var forwardStack: [String] = []
 	
 	/// Last navigation that occurred.
 	@Published public private(set) var lastAction: NavigationAction?
 	
-	let initialPath: String
-		
-	init(initialPath: String = "/") {
+	private let initialPath: String
+	
+	/// Initialize a `Navigator` to be fed to `Router` manually.
+	///
+	/// Initialize an instance of `Navigator` to keep a reference to outside of the SwiftUI lifecycle.
+	///
+	/// - Important: This is considered an advanced usecase for *SwiftUI Router* used for specific design patterns.
+	/// It is strongly advised to reference the `Navigator` via the provided Environment Object instead.
+	///
+	/// - Parameter initialPath: The initial path the `Navigator` should start at once initialized.
+	public init(initialPath: String = "/") {
 		self.initialPath = initialPath
 		self.historyStack = [initialPath]
 	}
@@ -47,8 +55,8 @@ public final class Navigator: ObservableObject {
 	// MARK: Methods.
 	/// Navigate to a new location.
 	///
-	/// The given path (`to`) is always relative to the current environment path.
-	/// This means you can use `/` to navigate using an absolute path and `../` to go up a directory.
+	/// The given path is always relative to the current environment path.
+	/// This means you can use `/` to navigate using an absolute path and `..` to go up a directory.
 	///
 	/// ```swift
 	/// navigator.navigate("news") // Relative.
@@ -73,8 +81,9 @@ public final class Navigator: ObservableObject {
 		}
 	
 		forwardStack.removeAll()
+
 		if replace {
-			historyStack[historyStack.indices.endIndex] = path
+			historyStack[historyStack.endIndex - 1] = path
 		}
 		else {
 			historyStack.append(path)
@@ -92,6 +101,10 @@ public final class Navigator: ObservableObject {
 	///
 	/// - Parameter total: Total steps to go back.
 	public func goBack(total: Int = 1) {
+		guard canGoBack else {
+			return
+		}
+
 		let previousPath = path
 
 		let total = min(total, historyStack.count)
@@ -111,6 +124,10 @@ public final class Navigator: ObservableObject {
 	///
 	/// - Parameter total: Total steps to go forward.
 	public func goForward(total: Int = 1) {
+		guard canGoForward else {
+			return
+		}
+
 		let previousPath = path
 
 		let total = min(total, forwardStack.count)
@@ -132,17 +149,24 @@ public final class Navigator: ObservableObject {
 	}
 }
 
+extension Navigator: Equatable {
+	public static func == (lhs: Navigator, rhs: Navigator) -> Bool {
+		lhs === rhs
+	}
+}
+
 
 // MARK: -
 /// Information about a navigation that occurred.
-public struct NavigationAction {
+public struct NavigationAction: Equatable {
 	/// Directional difference between the current path and the previous path.
 	public enum Direction {
 		/// The new path is higher up in the hierarchy *or* a completely different path.
+		/// Example: `/user/settings` → `/user`. Or `/favorite/music` → `/news/latest`.
 		case higher
-		/// The new path is deeper in the hierarchy.
+		/// The new path is deeper in the hierarchy. Example: `/news` → `/news/latest`.
 		case deeper
-		/// The new path shares the same parent.
+		/// The new path shares the same parent. Example: `/favorite/movies` → `/favorite/music`.
 		case sideways
 	}
 	

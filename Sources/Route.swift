@@ -1,18 +1,31 @@
 //
 //  SwiftUI Router
-//  Created by Freek Zijlmans on 13/01/2021.
+//  Created by Freek (github.com/frzi) 2021
 //
 
 import Foundation
 import SwiftUI
 
-/// A route showing only its children when its path matches with the environment path.
+/// A route showing only its content when its path matches with the environment path.
 ///
 /// When the environment path matches a `Route`'s path, its contents will be rendered.
 ///
 /// ```swift
-/// Route(path: "settings") {
+/// Route("settings") {
 /// 	SettingsView()
+/// }
+/// ```
+///
+/// ## Path parameters (aka placeholders)
+/// Paths may contain one or several parameters. Parameters are placeholders that will be replaced by the
+/// corresponding component of the matching path. Parameters are prefixed with a colon (:). The values of the
+/// parameters are provided via the `RouteInformation` object passed to the contents of the `Route`.
+/// Parameters can be marked as optional by postfixing them with a question mark (?).
+///
+/// **Note:** Only alphanumeric characters (A-Z, a-z, 0-9) are valid for parameters.
+/// ```swift
+/// Route("/news/:id") { routeInfo in
+/// 	NewsItemView(id: routeInfo.parameters["id"]!)
 /// }
 /// ```
 ///
@@ -26,7 +39,7 @@ import SwiftUI
 /// 	UUID(info.parameters["uuid"]!)
 /// }
 /// // Will only render if `uuid` is a valid UUID.
-/// Route(path: "user/:uuid", validator: validate) { uuid in
+/// Route("user/:uuid", validator: validate) { uuid in
 /// 	UserScreen(userId: uuid)
 /// }
 /// ```
@@ -66,13 +79,22 @@ public struct Route<ValidatedData, Content: View>: View {
 	/// - Parameter validator: A function that validates and transforms the route parameters.
 	/// - Parameter content: Views to render. The validated data is passed as an argument.
 	public init(
-		path: String = "*",
+		_ path: String = "*",
 		validator: @escaping Validator,
 		@ViewBuilder content: @escaping (ValidatedData) -> Content
 	) {
 		self.content = content
 		self.path = path
 		self.validator = validator
+	}
+
+	@available(*, deprecated, renamed: "init(_:validator:content:)")
+	public init(
+		path: String,
+		validator: @escaping Validator,
+		@ViewBuilder content: @escaping (ValidatedData) -> Content
+	) {
+		self.init(path, validator: validator, content: content)
 	}
 
 	public var body: some View {
@@ -82,15 +104,20 @@ public struct Route<ValidatedData, Content: View>: View {
 		var routeInformation: RouteInformation?
 
 		if !switchEnvironment.isActive || (switchEnvironment.isActive && !switchEnvironment.isResolved) {
-			if let matchInformation = try? pathMatcher.match(glob: resolvedGlob, with: navigator.path),
-			   let validated = validator(matchInformation)
-			{
-				validatedData = validated
-				routeInformation = matchInformation
-				
-				if switchEnvironment.isActive {
-					switchEnvironment.isResolved = true
+			do {
+				if let matchInformation = try pathMatcher.match(glob: resolvedGlob, with: navigator.path),
+				   let validated = validator(matchInformation)
+				{
+					validatedData = validated
+					routeInformation = matchInformation
+					
+					if switchEnvironment.isActive {
+						switchEnvironment.isResolved = true
+					}
 				}
+			}
+			catch {
+				fatalError("Unable to compile path glob '\(path)' to Regex. Error: \(error)")
 			}
 		}
 
@@ -110,7 +137,7 @@ public struct Route<ValidatedData, Content: View>: View {
 public extension Route where ValidatedData == RouteInformation {
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
 	/// - Parameter content: Views to render. An `RouteInformation` is passed containing route parameters.
-	init(path: String = "*", @ViewBuilder content: @escaping (RouteInformation) -> Content) {
+	init(_ path: String = "*", @ViewBuilder content: @escaping (RouteInformation) -> Content) {
 		self.path = path
 		self.validator = { $0 }
 		self.content = content
@@ -118,10 +145,35 @@ public extension Route where ValidatedData == RouteInformation {
 	
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
 	/// - Parameter content: Views to render.
-	init(path: String = "*", @ViewBuilder content: @escaping () -> Content) {
+	init(_ path: String = "*", @ViewBuilder content: @escaping () -> Content) {
 		self.path = path
 		self.validator = { $0 }
 		self.content = { _ in content() }
+	}
+	
+	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
+	/// - Parameter content: View to render (autoclosure).
+	init(_ path: String = "*", content: @autoclosure @escaping () -> Content) {
+		self.path = path
+		self.validator = { $0 }
+		self.content = { _ in content() }
+	}
+
+	// MARK: - Deprecated initializers.
+	// These will be completely removed in a future version.
+	@available(*, deprecated, renamed: "init(_:content:)")
+	init(path: String, @ViewBuilder content: @escaping (RouteInformation) -> Content) {
+		self.init(path, content: content)
+	}
+
+	@available(*, deprecated, renamed: "init(_:content:)")
+	init(path: String, @ViewBuilder content: @escaping () -> Content) {
+		self.init(path, content: content)
+	}
+
+	@available(*, deprecated, renamed: "init(_:content:)")
+	init(path: String, content: @autoclosure @escaping () -> Content) {
+		self.init(path, content: content)
 	}
 }
 
@@ -155,6 +207,14 @@ final class PathMatcher: ObservableObject {
 		let matchRegex: NSRegularExpression
 		let parameters: Set<String>
 	}
+	
+	private enum CompileError: Error {
+		case badParameter(String, culprit: String)
+	}
+	
+	private static let variablesRegex = try! NSRegularExpression(pattern: #":([^\/\?]+)"#, options: [])
+
+	//
 
 	private var cached: CompiledRegex?
 	
@@ -169,12 +229,21 @@ final class PathMatcher: ObservableObject {
 		var variables = Set<String>()
 
 		let nsrange = NSRange(glob.startIndex..<glob.endIndex, in: glob)
-		let variablesRegex = try NSRegularExpression(pattern: #":([^\/\?]+)"#, options: [])
-		let variableMatches = variablesRegex.matches(in: glob, options: [], range: nsrange)
+		let variableMatches = Self.variablesRegex.matches(in: glob, options: [], range: nsrange)
 
 		for match in variableMatches where match.numberOfRanges > 1 {
 			if let range = Range(match.range(at: 1), in: glob) {
-				variables.insert(String(glob[range]))
+				let variable = String(glob[range])
+
+				#if DEBUG
+				// In debug mode perform an extra check whether parameters contain invalid characters or
+				// whether the parameters starts with something besides a letter.
+				if let r = variable.range(of: "(^[^a-z]|[^a-z0-9])", options: [.regularExpression, .caseInsensitive]) {
+					throw CompileError.badParameter(variable, culprit: String(variable[r]))
+				}
+				#endif
+				
+				variables.insert(variable)
 			}
 		}
 
@@ -201,7 +270,7 @@ final class PathMatcher: ObservableObject {
 
 		return cached!
 	}
-	
+
 	func match(glob: String, with path: String) throws -> RouteInformation? {
 		let compiled = try compileRegex(glob)
 		
@@ -236,9 +305,6 @@ final class PathMatcher: ObservableObject {
 		
 		let resolvedGlob = String(path[range])
 		
-		return RouteInformation(
-			path: resolvedGlob,
-			parameters: parameterValues
-		)
+		return RouteInformation(path: resolvedGlob, parameters: parameterValues)
 	}
 }

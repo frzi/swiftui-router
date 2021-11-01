@@ -1,14 +1,14 @@
-SwiftUI Router
-==============
-> Easy and maintainable app navigation with path based routing for SwiftUI.
+<img src="Docs/Images/logo.svg" alt="SwiftUI Router" width="600">
+
+> Easy and maintainable app navigation with path-based routing for SwiftUI.
 
 ![SwiftUI](https://img.shields.io/github/v/release/frzi/SwiftUIRouter?style=for-the-badge)
 [![SwiftUI](https://img.shields.io/badge/SwiftUI-blue.svg?style=for-the-badge&logo=swift&logoColor=black)](https://developer.apple.com/xcode/swiftui)
 [![Swift](https://img.shields.io/badge/Swift-5.3-orange.svg?style=for-the-badge&logo=swift)](https://swift.org)
-[![Xcode](https://img.shields.io/badge/Xcode-12.4-blue.svg?style=for-the-badge&logo=Xcode&logoColor=white)](https://developer.apple.com/xcode)
+[![Xcode](https://img.shields.io/badge/Xcode-13-blue.svg?style=for-the-badge&logo=Xcode&logoColor=white)](https://developer.apple.com/xcode)
 [![MIT](https://img.shields.io/badge/license-MIT-black.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-With **SwiftUI Router** you can power your SwiftUI app with path based routing. By utilizing a path based system, navigation in your app becomes more flexible and easier to maintain.
+With **SwiftUI Router** you can power your SwiftUI app with path-based routing. By utilizing a path-based system, navigation in your app becomes more flexible and easier to maintain.
 
 ## Index
 * [Installation](#installation-)
@@ -17,7 +17,7 @@ With **SwiftUI Router** you can power your SwiftUI app with path based routing. 
 * [License](#license-)
 
 ## Installation 🛠
-In Xcode add the dependency to your project via *File > Swift Packages > Add Package Dependency...* and use the following url:
+In Xcode add the dependency to your project via *File > Add Packages > Search or Enter Package URL* and use the following url:
 ```
 https://github.com/frzi/SwiftUIRouter.git
 ```
@@ -50,20 +50,21 @@ The entry of a routing environment. Wrap your entire app (or just the part that 
 
 ### `Route`
 ```swift
-Route(path: "news/*") {
+Route("news/*") {
 	NewsScreen()
 }
-Route(path: "settings") {
+Route("settings") {
 	SettingsScreen()
 }
-Route(path: "user/:id?") { info in
+Route("user/:id?") { info in
 	UserScreen(id: info.parameters["id"])
 }
 ```
 A view that will only render its contents if its path matches that of the environment. Use `/*` to also match deeper paths. E.g.: the path `news/*` will match the following environment paths: `/news`, `/news/latest`, `/news/article/1` etc.
 
 #### Parameters
-Paths can contain parameters (aka variables) that can be read individually. A parameter's name is prefixed with a colon (`:`). Additionally, a parameter can be considered optional by suffixing it with a question mark (`?`). The parameters are passed down as a `[String : String]` in an `RouteInformation` object to a `Route`'s contents.
+Paths can contain parameters (aka placeholders) that can be read individually. A parameter's name is prefixed with a colon (`:`). Additionally, a parameter can be considered optional by suffixing it with a question mark (`?`). The parameters are passed down as a `[String : String]` in an `RouteInformation` object to a `Route`'s contents.  
+**Note**: Parameters may only exist of alphanumeric characters (A-Z, a-z and 0-9) and *must* start with a letter.
 
 #### Parameter validation
 ```swift
@@ -71,7 +72,7 @@ func validateUserID(routeInfo: RouteInformation) -> UUID? {
 	UUID(routeInfo.parameters["id"] ?? "")
 }
 
-Route(path: "user/:id", validator: validateUserID) { userID in
+Route("user/:id", validator: validateUserID) { userID in
 	UserScreen(userID: userID)
 }
 ```
@@ -96,13 +97,13 @@ A wrapper around a `Button` that will navigate to the given path if pressed.
 ### `SwitchRoutes`
 ```swift
 SwitchRoutes {
-	Route(path: "latest") {
+	Route("latest") {
 		LatestNewsScreen()
 	}
-	Route(path: "article/:id") { info in
+	Route("article/:id") { info in
 		NewsArticleScreen(articleID: info.parameters["id"]!)
 	}
-	Route(path: ":unknown") {
+	Route(":unknown") {
 		ErrorScreen()
 	}
 	Route {
