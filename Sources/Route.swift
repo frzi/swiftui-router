@@ -105,7 +105,10 @@ public struct Route<ValidatedData, Content: View>: View {
 
 		if !switchEnvironment.isActive || (switchEnvironment.isActive && !switchEnvironment.isResolved) {
 			do {
-				if let matchInformation = try pathMatcher.match(glob: resolvedGlob, with: navigator.path),
+				if let matchInformation = try pathMatcher.match(
+					glob: resolvedGlob,
+					with: navigator.path,
+					relative: relativePath),
 				   let validated = validator(matchInformation)
 				{
 					validatedData = validated
@@ -187,12 +190,19 @@ public extension Route where ValidatedData == RouteInformation {
 /// This object contains the resolved parameters (variables) of the `Route`'s path, as well as the relative path
 /// for all views inside the hierarchy.
 public final class RouteInformation: ObservableObject {
+	/// The resolved path component of the parent `Route`.
+	public let matchedPath: String
+	
+	/// The current relative path.
 	public let path: String
+
+	/// Resolved parameters of the parent `Route`s path.
 	public let parameters: [String : String]
 	
-	init(path: String, parameters: [String : String] = [:]) {
-		self.path = path
+	init(path: String, matchedPath: String, parameters: [String : String] = [:]) {
+		self.matchedPath = matchedPath
 		self.parameters = parameters
+		self.path = path
 	}
 }
 
@@ -271,7 +281,7 @@ final class PathMatcher: ObservableObject {
 		return cached!
 	}
 
-	func match(glob: String, with path: String) throws -> RouteInformation? {
+	func match(glob: String, with path: String, relative: String) throws -> RouteInformation? {
 		let compiled = try compileRegex(glob)
 		
 		var nsrange = NSRange(path.startIndex..<path.endIndex, in: path)
@@ -304,7 +314,10 @@ final class PathMatcher: ObservableObject {
 		}
 		
 		let resolvedGlob = String(path[range])
+		let matchedPath = String(path[relative.endIndex...])
 		
-		return RouteInformation(path: resolvedGlob, parameters: parameterValues)
+		print("resolved: \(resolvedGlob), matched: \(matchedPath), relative: \(relative)")
+
+		return RouteInformation(path: resolvedGlob, matchedPath: matchedPath, parameters: parameterValues)
 	}
 }

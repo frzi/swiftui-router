@@ -1,4 +1,4 @@
-<img src="Docs/Images/logo.svg" alt="SwiftUI Router" width="600">
+<img src="Sources/SwiftUIRouter.docc/Resources/logo.svg" alt="SwiftUI Router" width="600">
 
 > Easy and maintainable app navigation with path-based routing for SwiftUI.
 
