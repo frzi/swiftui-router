@@ -109,7 +109,7 @@ public final class Navigator: ObservableObject {
 
 		let total = min(total, historyStack.count)
 		let start = historyStack.count - total
-		forwardStack.insert(contentsOf: historyStack[start...], at: 0)
+		forwardStack.append(contentsOf: historyStack[start...].reversed())
 		historyStack.removeLast(total)
 		
 		lastAction = NavigationAction(
