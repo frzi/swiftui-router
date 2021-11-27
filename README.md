@@ -13,6 +13,7 @@ With **SwiftUI Router** you can power your SwiftUI app with path-based routing. 
 ## Index
 * [Installation](#installation-)
 * [Documentation](#documentation-)
+* [Examples](#examples-)
 * [Usage](#usage-)
 * [License](#license-)
 
@@ -34,6 +35,12 @@ import SwiftUIRouter
 - [Animating routes](/Sources/SwiftUIRouter/AnimatingRoutes.md)
 
 <br>
+
+## Examples 👀
+- [SwiftUI Router Examples](https://github.com/frzi/SwiftUIRouter-Examples) containing:  
+  ┗ [RandomUsers](https://github.com/frzi/SwiftUIRouter-Examples/tree/main/RandomUsers)  
+  ┗ [Swiping](https://github.com/frzi/SwiftUIRouter-Examples/tree/main/Swiping)  
+  ┗ [TabViews](https://github.com/frzi/SwiftUIRouter-Examples/tree/main/TabViewRouting)
 
 ## Usage 🚀
 Below a quick rundown of the available views and objects and their basic features. For further details, please check out the documentation in the Swift files.
