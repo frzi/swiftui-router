@@ -82,7 +82,7 @@ public final class Navigator: ObservableObject {
 	
 		forwardStack.removeAll()
 
-		if replace {
+		if replace && !historyStack.isEmpty {
 			historyStack[historyStack.endIndex - 1] = path
 		}
 		else {
