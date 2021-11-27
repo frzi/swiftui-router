@@ -67,4 +67,4 @@ SwitchRoutes {
 
 *Tada~*
 
-![Preview](animated_routes.gif)
+![Preview](Images/animated_routes.gif)

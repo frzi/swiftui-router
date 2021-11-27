@@ -316,7 +316,7 @@ final class PathMatcher: ObservableObject {
 		let resolvedGlob = String(path[range])
 		let matchedPath = String(path[relative.endIndex...])
 		
-		print("resolved: \(resolvedGlob), matched: \(matchedPath), relative: \(relative)")
+		//print("resolved: \(resolvedGlob), matched: \(matchedPath), relative: \(relative)")
 
 		return RouteInformation(path: resolvedGlob, matchedPath: matchedPath, parameters: parameterValues)
 	}

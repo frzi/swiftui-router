@@ -37,10 +37,12 @@ import SwiftUIRouter
 <br>
 
 ## Examples 👀
-- [SwiftUI Router Examples](https://github.com/frzi/SwiftUIRouter-Examples) containing:  
+- [SwiftUI Router Examples](https://github.com/frzi/SwiftUIRouter-Examples) contains:  
   ┗ [RandomUsers](https://github.com/frzi/SwiftUIRouter-Examples/tree/main/RandomUsers)  
   ┗ [Swiping](https://github.com/frzi/SwiftUIRouter-Examples/tree/main/Swiping)  
   ┗ [TabViews](https://github.com/frzi/SwiftUIRouter-Examples/tree/main/TabViewRouting)
+
+<br>
 
 ## Usage 🚀
 Below a quick rundown of the available views and objects and their basic features. For further details, please check out the documentation in the Swift files.
