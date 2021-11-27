@@ -194,6 +194,18 @@ final class SwiftUIRouterTests: XCTestCase {
 		// 4: Going up redundantly.
 		navigator.navigate("../../../../..")
 		XCTAssertTrue(navigator.path == "/")
+		
+		// 5: Go back.
+		navigator.goBack()
+		XCTAssertTrue(navigator.path == "/settings")
+		
+		// 6: Go back twice.
+		navigator.goBack(total: 2)
+		XCTAssertTrue(navigator.path == "/news")
+		
+		// 7: Go forward.
+		navigator.goForward()
+		XCTAssertTrue(navigator.path == "/settings/user")
 	}
 	
 	/// Test navigation actions.
