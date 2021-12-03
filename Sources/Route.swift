@@ -281,7 +281,7 @@ final class PathMatcher: ObservableObject {
 		return cached!
 	}
 
-	func match(glob: String, with path: String, relative: String) throws -> RouteInformation? {
+	func match(glob: String, with path: String, relative: String = "/") throws -> RouteInformation? {
 		let compiled = try compileRegex(glob)
 		
 		var nsrange = NSRange(path.startIndex..<path.endIndex, in: path)
@@ -316,7 +316,7 @@ final class PathMatcher: ObservableObject {
 		let resolvedGlob = String(path[range])
 		let matchedPath = String(path[relative.endIndex...])
 		
-		//print("resolved: \(resolvedGlob), matched: \(matchedPath), relative: \(relative)")
+		print("resolved: \(resolvedGlob), matched: \(matchedPath), relative: \(relative)")
 
 		return RouteInformation(path: resolvedGlob, matchedPath: matchedPath, parameters: parameterValues)
 	}

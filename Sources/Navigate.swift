@@ -31,6 +31,7 @@ public struct Navigate: View {
 	private let replace: Bool
 
 	/// - Parameter path: New path to navigate to once the View is rendered.
+	/// - Parameter replace: if `true` will replace the last path in the history stack with the new path.
 	public init(to path: String, replace: Bool = true) {
 		self.path = path
 		self.replace = replace
