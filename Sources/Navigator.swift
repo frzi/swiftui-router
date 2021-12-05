@@ -7,10 +7,10 @@ import SwiftUI
 
 /// EnvironmentObject storing the state of a Router.
 ///
-/// Use this object to programmatically navigate to a new path, jump forward or back in the history, to clear the
+/// Use this object to programmatically navigate to a new path, to jump forward or back in the history, to clear the
 /// history, or to find out whether the user can go back or forward.
 ///
-/// - Note: This EnvironmentObject is available in all children of a `Router`.
+/// - Note: This EnvironmentObject is available inside the hierarchy of a `Router`.
 ///
 /// ```swift
 /// @EnvironmentObject var navigator: Navigator

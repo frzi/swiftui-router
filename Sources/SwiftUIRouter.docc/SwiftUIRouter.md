@@ -1,10 +1,10 @@
 # ``SwiftUIRouter``
 
-Easy and maintainable app navigation with path based routing for SwiftUI.
+Easy and maintainable app navigation with path-based routing for SwiftUI.
 
 ![SwiftUI Router logo](logo)
 
-With **SwiftUI Router** you can power your SwiftUI app with path based routing. By utilizing a path based system, navigation in your app becomes more flexible and easier to maintain.
+With **SwiftUI Router** you can power your SwiftUI app with path-based routing. By utilizing a path-based system, navigation in your app becomes more flexible and easier to maintain.
 
 ### Additional content 
 - Examples can be found on [Github](https://github.com/frzi/SwiftUIRouter-Examples)

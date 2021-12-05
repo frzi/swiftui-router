@@ -98,15 +98,13 @@ public struct Route<ValidatedData, Content: View>: View {
 	}
 
 	public var body: some View {
-		let resolvedGlob = resolvePaths(relativePath, path)
-		
 		var validatedData: ValidatedData?
 		var routeInformation: RouteInformation?
 
 		if !switchEnvironment.isActive || (switchEnvironment.isActive && !switchEnvironment.isResolved) {
 			do {
 				if let matchInformation = try pathMatcher.match(
-					glob: resolvedGlob,
+					glob: path,
 					with: navigator.path,
 					relative: relativePath),
 				   let validated = validator(matchInformation)
@@ -190,8 +188,8 @@ public extension Route where ValidatedData == RouteInformation {
 /// This object contains the resolved parameters (variables) of the `Route`'s path, as well as the relative path
 /// for all views inside the hierarchy.
 public final class RouteInformation: ObservableObject {
-	/// The resolved path component of the parent `Route`.
-	public let matchedPath: String
+	/// The resolved path component of the parent `Route`. For internal use only, at the moment.
+	let matchedPath: String
 	
 	/// The current relative path.
 	public let path: String
@@ -282,7 +280,8 @@ final class PathMatcher: ObservableObject {
 	}
 
 	func match(glob: String, with path: String, relative: String = "/") throws -> RouteInformation? {
-		let compiled = try compileRegex(glob)
+		let completeGlob = resolvePaths(relative, glob)
+		let compiled = try compileRegex(completeGlob)
 		
 		var nsrange = NSRange(path.startIndex..<path.endIndex, in: path)
 		let matches = compiled.matchRegex.matches(in: path, options: [], range: nsrange)
@@ -309,14 +308,13 @@ final class PathMatcher: ObservableObject {
 		// we only want "/news/article".
 		nsrange = matches[0].range(at: 1) // Should be the entire capture group.
 		guard nsrange.location != NSNotFound,
-			let range = Range(nsrange, in: path) else {
+			let range = Range(nsrange, in: path)
+		else {
 			return nil
 		}
 		
 		let resolvedGlob = String(path[range])
 		let matchedPath = String(path[relative.endIndex...])
-		
-		print("resolved: \(resolvedGlob), matched: \(matchedPath), relative: \(relative)")
 
 		return RouteInformation(path: resolvedGlob, matchedPath: matchedPath, parameters: parameterValues)
 	}
