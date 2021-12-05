@@ -15,7 +15,7 @@ import SwiftUI
 /// Router {
 /// 	HomeView()
 ///
-/// 	Route(path: "/news") {
+/// 	Route("/news") {
 /// 		NewsHeaderView()
 /// 	}
 /// }

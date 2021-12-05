@@ -11,7 +11,7 @@ import SwiftUI
 /// When the environment path matches a `Route`'s path, its contents will be rendered.
 ///
 /// ```swift
-/// Route(path: "settings") {
+/// Route("settings") {
 /// 	SettingsView()
 /// }
 /// ```
@@ -24,7 +24,7 @@ import SwiftUI
 ///
 /// **Note:** Only alphanumeric characters (A-Z, a-z, 0-9) are valid for parameters.
 /// ```swift
-/// Route(path: "/news/:id") { routeInfo in
+/// Route("/news/:id") { routeInfo in
 /// 	NewsItemView(id: routeInfo.parameters["id"]!)
 /// }
 /// ```
@@ -39,7 +39,7 @@ import SwiftUI
 /// 	UUID(info.parameters["uuid"]!)
 /// }
 /// // Will only render if `uuid` is a valid UUID.
-/// Route(path: "user/:uuid", validator: validate) { uuid in
+/// Route("user/:uuid", validator: validate) { uuid in
 /// 	UserScreen(userId: uuid)
 /// }
 /// ```
@@ -48,13 +48,13 @@ import SwiftUI
 /// Every path found in a `Route`'s hierarchy is relative to the path of said `Route`. With the exception of paths
 /// starting with `/`. This allows you to develop parts of your app more like separate 'sub' apps.
 /// ```swift
-/// Route(path: "/news") {
+/// Route("/news") {
 /// 	// Goes to `/news/latest`
 /// 	NavLink(to: "latest") { Text("Latest news") }
 /// 	// Goes to `/home`
 /// 	NavLink(to: "/home") { Text("Home") }
 /// 	// Route for `/news/unknown/*`
-/// 	Route(path: "unknown/*") {
+/// 	Route("unknown/*") {
 /// 		// Redirects to `/news/error`
 /// 		Navigate(to: "../error")
 /// 	}
@@ -79,13 +79,22 @@ public struct Route<ValidatedData, Content: View>: View {
 	/// - Parameter validator: A function that validates and transforms the route parameters.
 	/// - Parameter content: Views to render. The validated data is passed as an argument.
 	public init(
-		path: String = "*",
+		_ path: String = "*",
 		validator: @escaping Validator,
 		@ViewBuilder content: @escaping (ValidatedData) -> Content
 	) {
 		self.content = content
 		self.path = path
 		self.validator = validator
+	}
+
+	@available(*, deprecated, renamed: "init(_:validator:content:)")
+	public init(
+		path: String,
+		validator: @escaping Validator,
+		@ViewBuilder content: @escaping (ValidatedData) -> Content
+	) {
+		self.init(path, validator: validator, content: content)
 	}
 
 	public var body: some View {
@@ -96,7 +105,10 @@ public struct Route<ValidatedData, Content: View>: View {
 
 		if !switchEnvironment.isActive || (switchEnvironment.isActive && !switchEnvironment.isResolved) {
 			do {
-				if let matchInformation = try pathMatcher.match(glob: resolvedGlob, with: navigator.path),
+				if let matchInformation = try pathMatcher.match(
+					glob: resolvedGlob,
+					with: navigator.path,
+					relative: relativePath),
 				   let validated = validator(matchInformation)
 				{
 					validatedData = validated
@@ -128,7 +140,7 @@ public struct Route<ValidatedData, Content: View>: View {
 public extension Route where ValidatedData == RouteInformation {
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
 	/// - Parameter content: Views to render. An `RouteInformation` is passed containing route parameters.
-	init(path: String = "*", @ViewBuilder content: @escaping (RouteInformation) -> Content) {
+	init(_ path: String = "*", @ViewBuilder content: @escaping (RouteInformation) -> Content) {
 		self.path = path
 		self.validator = { $0 }
 		self.content = content
@@ -136,7 +148,7 @@ public extension Route where ValidatedData == RouteInformation {
 	
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
 	/// - Parameter content: Views to render.
-	init(path: String = "*", @ViewBuilder content: @escaping () -> Content) {
+	init(_ path: String = "*", @ViewBuilder content: @escaping () -> Content) {
 		self.path = path
 		self.validator = { $0 }
 		self.content = { _ in content() }
@@ -144,10 +156,27 @@ public extension Route where ValidatedData == RouteInformation {
 	
 	/// - Parameter path: A path glob to test with the current path. See documentation for `Route`.
 	/// - Parameter content: View to render (autoclosure).
-	init(path: String = "*", content: @autoclosure @escaping () -> Content) {
+	init(_ path: String = "*", content: @autoclosure @escaping () -> Content) {
 		self.path = path
 		self.validator = { $0 }
 		self.content = { _ in content() }
+	}
+
+	// MARK: - Deprecated initializers.
+	// These will be completely removed in a future version.
+	@available(*, deprecated, renamed: "init(_:content:)")
+	init(path: String, @ViewBuilder content: @escaping (RouteInformation) -> Content) {
+		self.init(path, content: content)
+	}
+
+	@available(*, deprecated, renamed: "init(_:content:)")
+	init(path: String, @ViewBuilder content: @escaping () -> Content) {
+		self.init(path, content: content)
+	}
+
+	@available(*, deprecated, renamed: "init(_:content:)")
+	init(path: String, content: @autoclosure @escaping () -> Content) {
+		self.init(path, content: content)
 	}
 }
 
@@ -161,12 +190,19 @@ public extension Route where ValidatedData == RouteInformation {
 /// This object contains the resolved parameters (variables) of the `Route`'s path, as well as the relative path
 /// for all views inside the hierarchy.
 public final class RouteInformation: ObservableObject {
+	/// The resolved path component of the parent `Route`.
+	public let matchedPath: String
+	
+	/// The current relative path.
 	public let path: String
+
+	/// Resolved parameters of the parent `Route`s path.
 	public let parameters: [String : String]
 	
-	init(path: String, parameters: [String : String] = [:]) {
-		self.path = path
+	init(path: String, matchedPath: String, parameters: [String : String] = [:]) {
+		self.matchedPath = matchedPath
 		self.parameters = parameters
+		self.path = path
 	}
 }
 
@@ -245,7 +281,7 @@ final class PathMatcher: ObservableObject {
 		return cached!
 	}
 
-	func match(glob: String, with path: String) throws -> RouteInformation? {
+	func match(glob: String, with path: String, relative: String = "/") throws -> RouteInformation? {
 		let compiled = try compileRegex(glob)
 		
 		var nsrange = NSRange(path.startIndex..<path.endIndex, in: path)
@@ -278,7 +314,10 @@ final class PathMatcher: ObservableObject {
 		}
 		
 		let resolvedGlob = String(path[range])
+		let matchedPath = String(path[relative.endIndex...])
 		
-		return RouteInformation(path: resolvedGlob, parameters: parameterValues)
+		print("resolved: \(resolvedGlob), matched: \(matchedPath), relative: \(relative)")
+
+		return RouteInformation(path: resolvedGlob, matchedPath: matchedPath, parameters: parameterValues)
 	}
 }

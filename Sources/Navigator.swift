@@ -68,7 +68,7 @@ public final class Navigator: ObservableObject {
 	/// will be printed to the console.
 	///
 	/// - Parameter path: Path of the new location to navigate to.
-	/// - Parameter replace: if `true`, will not add the current location to the history.
+	/// - Parameter replace: if `true` will replace the last path in the history stack with the new path.
 	public func navigate(_ path: String, replace: Bool = false) {
 		let path = resolvePaths(self.path, path)
 		let previousPath = self.path

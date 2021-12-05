@@ -1,6 +1,6 @@
 <img src="Docs/Images/logo.svg" alt="SwiftUI Router" width="600">
 
-> Easy and maintainable app navigation with path based routing for SwiftUI.
+> Easy and maintainable app navigation with path-based routing for SwiftUI.
 
 ![SwiftUI](https://img.shields.io/github/v/release/frzi/SwiftUIRouter?style=for-the-badge)
 [![SwiftUI](https://img.shields.io/badge/SwiftUI-blue.svg?style=for-the-badge&logo=swift&logoColor=black)](https://developer.apple.com/xcode/swiftui)
@@ -8,11 +8,12 @@
 [![Xcode](https://img.shields.io/badge/Xcode-13-blue.svg?style=for-the-badge&logo=Xcode&logoColor=white)](https://developer.apple.com/xcode)
 [![MIT](https://img.shields.io/badge/license-MIT-black.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-With **SwiftUI Router** you can power your SwiftUI app with path based routing. By utilizing a path based system, navigation in your app becomes more flexible and easier to maintain.
+With **SwiftUI Router** you can power your SwiftUI app with path-based routing. By utilizing a path-based system, navigation in your app becomes more flexible and easier to maintain.
 
 ## Index
 * [Installation](#installation-)
 * [Documentation](#documentation-)
+* [Examples](#examples-)
 * [Usage](#usage-)
 * [License](#license-)
 
@@ -31,7 +32,15 @@ import SwiftUIRouter
 <br>
 
 ## Documentation 📚
-- [Animating routes](/Docs/AnimatingRoutes.md)
+- [Animating routes](/Sources/SwiftUIRouter/AnimatingRoutes.md)
+
+<br>
+
+## Examples 👀
+- [SwiftUI Router Examples](https://github.com/frzi/SwiftUIRouter-Examples) contains:  
+  ┗ [RandomUsers](https://github.com/frzi/SwiftUIRouter-Examples/tree/main/RandomUsers)  
+  ┗ [Swiping](https://github.com/frzi/SwiftUIRouter-Examples/tree/main/Swiping)  
+  ┗ [TabViews](https://github.com/frzi/SwiftUIRouter-Examples/tree/main/TabViewRouting)
 
 <br>
 
@@ -50,13 +59,13 @@ The entry of a routing environment. Wrap your entire app (or just the part that 
 
 ### `Route`
 ```swift
-Route(path: "news/*") {
+Route("news/*") {
 	NewsScreen()
 }
-Route(path: "settings") {
+Route("settings") {
 	SettingsScreen()
 }
-Route(path: "user/:id?") { info in
+Route("user/:id?") { info in
 	UserScreen(id: info.parameters["id"])
 }
 ```
@@ -72,7 +81,7 @@ func validateUserID(routeInfo: RouteInformation) -> UUID? {
 	UUID(routeInfo.parameters["id"] ?? "")
 }
 
-Route(path: "user/:id", validator: validateUserID) { userID in
+Route("user/:id", validator: validateUserID) { userID in
 	UserScreen(userID: userID)
 }
 ```
@@ -97,13 +106,13 @@ A wrapper around a `Button` that will navigate to the given path if pressed.
 ### `SwitchRoutes`
 ```swift
 SwitchRoutes {
-	Route(path: "latest") {
+	Route("latest") {
 		LatestNewsScreen()
 	}
-	Route(path: "article/:id") { info in
+	Route("article/:id") { info in
 		NewsArticleScreen(articleID: info.parameters["id"]!)
 	}
-	Route(path: ":unknown") {
+	Route(":unknown") {
 		ErrorScreen()
 	}
 	Route {

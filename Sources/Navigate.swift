@@ -7,13 +7,13 @@ import SwiftUI
 
 /// When rendered will automatically perform a navigation to the given path.
 ///
-/// This view allows you to pragmatically navigate to a new path in a View's body.
+/// This view allows you to programmatically navigate to a new path in a View's body.
 ///
 /// ```swift
 /// SwitchRoutes {
-/// 	Route(path: "news") { NewsView() }
+/// 	Route("news", content: NewsView())
 /// 	Route {
-/// 		// If this Route gets rendered redirect
+/// 		// If this Route gets rendered it'll redirect
 /// 		// the user to a 'not found' screen.
 /// 		Navigate(to: "/not-found")
 /// 	}
@@ -31,6 +31,7 @@ public struct Navigate: View {
 	private let replace: Bool
 
 	/// - Parameter path: New path to navigate to once the View is rendered.
+	/// - Parameter replace: if `true` will replace the last path in the history stack with the new path.
 	public init(to path: String, replace: Bool = true) {
 		self.path = path
 		self.replace = replace

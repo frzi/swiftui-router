@@ -1,5 +1,9 @@
 # Animating routes
 
+Simulating screen transitions à la iOS.
+
+## Introduction
+
 On a platform like iOS, users may expect animated screen transitions when navigating through the app. (Less so the case with macOS) Apps get these transitions for free with `NavigationView`. But with SwiftUI Router, however, this is not the case. Ideally, you want a transition that differs as the user goes forward (deeper) in the app and when they go back (higher).
 
 SwiftUI Router exposes the `Navigator` environment object. An object that allows for navigation done programmatically. It also contains the property `.lastAction`, which is of type `NavigationAction?`. This object contains read-only information about the last navigation that occurred. Information like the previous path, the current path, whether the app navigated forward or back. But also the *direction* of the navigation, which is what we're interested in right now.
@@ -16,7 +20,7 @@ struct NavigationTransition: ViewModifier {
 	
 	func body(content: Content) -> some View {
 		content
-			.animation(.easeInOut)
+			.animation(.easeInOut, value: navigator.path)
 			.transition(
 				navigator.lastAction?.direction == .deeper || navigator.lastAction?.direction == .sideways
 					? AnyTransition.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading))
@@ -39,19 +43,19 @@ extension View {
 
 The modifier can be applied to `Route` views:
 ```swift
-Route(path: "news") {
+Route("news") {
 	NewsScreen()
 }
 .navigationTransition()
 ```
 
-The modifier can also be applied to a `SwitchRoutes`. This will apply the animated transition to all `Route` views inside the `SwitchRoutes`.
+The modifier can also be applied to a ``SwitchRoutes``. This will apply the animated transition to all `Route` views inside the ``SwitchRoutes``.
 ```swift
 SwitchRoutes {
-	Route(path: "news/:id", validator: newsIdValidator) { uuid in
+	Route("news/:id", validator: newsIdValidator) { uuid in
 		NewsItemScreen(uuid: uuid)
 	}
-	Route(path: "news") {
+	Route("news") {
 		NewsScreen()
 	}
 	Route {
