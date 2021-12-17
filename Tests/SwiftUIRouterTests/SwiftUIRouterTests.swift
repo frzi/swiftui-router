@@ -97,7 +97,7 @@ final class SwiftUIRouterTests: XCTestCase {
 		let isNil: [(String, String)] = [
 			("/", "/hello"),
 			("/hello", "/world"),
-			("/foo/:bar?/hello", "/foo/hello"),
+			("/foo/:bar/hello", "/foo/hello"),
 			("/movie", "/movies"),
 			("/movie/*", "/movies"),
 			("/movie/*", "/movies/actor"),

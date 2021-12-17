@@ -299,7 +299,13 @@ final class PathMatcher: ObservableObject {
 				if nsrange.location != NSNotFound,
 				   let range = Range(nsrange, in: path)
 				{
-					parameterValues[variable] = String(path[range])
+					var value = String(path[range])
+
+					if value.starts(with: "/") {
+						value = String(value.dropFirst())
+					}
+
+					parameterValues[variable] = value
 				}
 			}
 		}
