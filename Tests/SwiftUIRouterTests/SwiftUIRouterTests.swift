@@ -73,6 +73,10 @@ final class SwiftUIRouterTests: XCTestCase {
 			("/news/latest", "/news/latest"),
 			("/user/:id/*", "/user/1"),
 			("/user/:id/*", "/user/1/settings"),
+			("/user/:id?", "/user"),
+			("/user/:id?", "/user/mark"),
+			("/user/:id/:group?", "/user/mark"),
+			("/user/:id/:group?", "/user/mark/admin"),
 		]
 		
 		for (glob, path) in notNil {

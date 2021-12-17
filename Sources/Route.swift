@@ -262,12 +262,14 @@ final class PathMatcher: ObservableObject {
 			.replacingOccurrences(of: "^[^/]/$", with: "", options: .regularExpression) // Trailing slash.
 			.replacingOccurrences(of: #"\/?\*"#, with: "", options: .regularExpression) // Trailing asterisk.
 		
-		for variable in variables {
+		for (index, variable) in variables.enumerated() {
+			let isAtRoot = index == 0 && glob.starts(with: "/:")
 			pattern = pattern.replacingOccurrences(
-				of: "/:" + variable,
-				with: "/(?<" + variable + ">[^/?]+)", // Named capture group.
+				of: (isAtRoot ? ":" : "/:") + variable,
+				with: "(?<\(variable)>" + (isAtRoot ? "" : "/") + "[^/?]+)", // Named capture group.
 				options: .regularExpression)
 		}
+
 		pattern = "^" +
 			(pattern.isEmpty ? "" : "(\(pattern))") +
 			(endsWithAsterisk ? "(/.*)?$" : "$")
