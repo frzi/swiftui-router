@@ -57,8 +57,6 @@ final class SwiftUIRouterTests: XCTestCase {
 	
 	/// Test if the globs and paths match.
 	func testCorrectMatches() {
-		let pathMatcher = PathMatcher()
-		
 		let notNil: [(String, String)] = [
 			("/", "/"),
 			("/*", "/"),
@@ -73,13 +71,17 @@ final class SwiftUIRouterTests: XCTestCase {
 			("/news/latest", "/news/latest"),
 			("/user/:id/*", "/user/1"),
 			("/user/:id/*", "/user/1/settings"),
+			("/user/:id?", "/user"),
+			("/user/:id?", "/user/mark"),
+			("/user/:id/:group?", "/user/mark"),
+			("/user/:id/:group?", "/user/mark/admin"),
 		]
 		
 		for (glob, path) in notNil {
-			let resolvedGlob = resolvePaths("/", glob)
+			let pathMatcher = PathMatcher()
 			
 			XCTAssertNotNil(
-				try? pathMatcher.match(glob: resolvedGlob, with: path),
+				try? pathMatcher.match(glob: glob, with: path),
 				"Glob \(glob) does not match \(path)."
 			)
 		}
@@ -93,7 +95,7 @@ final class SwiftUIRouterTests: XCTestCase {
 		let isNil: [(String, String)] = [
 			("/", "/hello"),
 			("/hello", "/world"),
-			("/foo/:bar?/hello", "/foo/hello"),
+			("/foo/:bar/hello", "/foo/hello"),
 			("/movie", "/movies"),
 			("/movie/*", "/movies"),
 			("/movie/*", "/movies/actor"),
@@ -116,7 +118,7 @@ final class SwiftUIRouterTests: XCTestCase {
 			("/:id?", "/hello", ["id": "hello"]),
 			("/:id", "/hello", ["id": "hello"]),
 			("/:foo/:bar", "/hello/world", ["foo": "hello", "bar": "world"]),
-			("/:foo/:bar?", "/hello/", ["foo": "hello"]),
+			("/:foo/:bar?", "/hello", ["foo": "hello"]),
 			("/user/:id/*", "/user/5", ["id": "5"]),
 		]
 		
