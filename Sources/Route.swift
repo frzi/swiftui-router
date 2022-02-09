@@ -127,10 +127,10 @@ public struct Route<ValidatedData, Content: View>: View {
 			   let routeInformation = routeInformation
 			{
 				content(validatedData)
-          .id(self.path)
 					.environment(\.relativePath, routeInformation.path)
 					.environmentObject(routeInformation)
 					.environmentObject(SwitchRoutesEnvironment())
+          .id(self.path)
 			}
 		}
 	}
