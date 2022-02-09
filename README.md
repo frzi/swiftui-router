@@ -144,7 +144,7 @@ An environment object containg the data of the `Router`. With this object you ca
 ```swift
 @EnvironmentObject var routeInformation: RouteInformation
 ```
-A lightweight object containing information of the current `Route`. A `RouteInformation` contains the current path and a `[String : String]` with all the parsed parameters.  
+A lightweight object containing information of the current `Route`. A `RouteInformation` contains the relative path and a `[String : String]` with all the parsed [parameters](#parameters).  
 
 This object is passed down by default in a `Route` to its contents. It's also accessible as an environment object.
 

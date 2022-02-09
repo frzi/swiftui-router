@@ -62,14 +62,13 @@ public struct Router<Content: View>: View {
 }
 
 // MARK: - Relative path environment key
-/// NOTE: This has actually become quite redundant thanks to `RouteInformation`'s changes.
-/// Remove and use `RouteInformation` environment objects instead?
 struct RelativeRouteEnvironment: EnvironmentKey {
 	static var defaultValue = "/"
 }
 
-extension EnvironmentValues {
-	var relativePath: String {
+public extension EnvironmentValues {
+	/// The current relative path of the closest `Route`.
+	internal(set) var relativePath: String {
 		get { self[RelativeRouteEnvironment.self] }
 		set { self[RelativeRouteEnvironment.self] = newValue }
 	}

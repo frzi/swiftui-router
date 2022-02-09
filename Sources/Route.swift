@@ -287,7 +287,7 @@ final class PathMatcher: ObservableObject {
 		
 		var nsrange = NSRange(path.startIndex..<path.endIndex, in: path)
 		let matches = compiled.matchRegex.matches(in: path, options: [], range: nsrange)
-		if matches.isEmpty {
+		guard !matches.isEmpty else {
 			return nil
 		}
 
