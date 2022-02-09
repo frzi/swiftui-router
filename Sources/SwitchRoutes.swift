@@ -57,3 +57,33 @@ final class SwitchRoutesEnvironment: ObservableObject {
 		isActive = active
 	}
 }
+
+extension View {
+  func switchRoutes<Content: View, T: ViewModifier>(
+    @ViewBuilder content: @escaping () -> Content,
+    modifier: T
+  ) -> some View {
+    GeometryReader { _ in
+      SwitchRoutes {
+        content()
+        Route {
+          self
+        }
+      }
+      .modifier(modifier)
+    }
+  }
+
+  func switchRoutes<Content: View>(
+    @ViewBuilder content: @escaping () -> Content
+  ) -> some View {
+    GeometryReader { _ in
+      SwitchRoutes {
+        content()
+        Route {
+          self
+        }
+      }
+    }
+  }
+}
