@@ -32,7 +32,7 @@ import SwiftUIRouter
 <br>
 
 ## Documentation 📚
-- [Animating routes](/Sources/SwiftUIRouter/AnimatingRoutes.md)
+- [Animating routes](/Docs/AnimatingRoutes.md)
 
 <br>
 
