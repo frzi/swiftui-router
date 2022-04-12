@@ -51,6 +51,10 @@ public final class Navigator: ObservableObject {
 	public var canGoForward: Bool {
 		!forwardStack.isEmpty
 	}
+
+	public var currentStackIndex: Int {
+		historyStack.count - 1
+	}
 	
 	// MARK: Methods.
 	/// Navigate to a new location.
