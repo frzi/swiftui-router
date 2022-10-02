@@ -52,8 +52,18 @@ public final class Navigator: ObservableObject {
 		!forwardStack.isEmpty
 	}
 
-	public var currentStackIndex: Int {
+	/// The size of the history stack.
+	///
+	/// The amount of times the `Navigator` 'can go back'.
+	public var historyStackSize: Int {
 		historyStack.count - 1
+	}
+
+	/// The size of the forward stack.
+	///
+	/// The amount of times the `Navigator` 'can go forward'.
+	public var forwardStackSize: Int {
+		forwardStack.count
 	}
 	
 	// MARK: Methods.
@@ -156,6 +166,14 @@ public final class Navigator: ObservableObject {
 extension Navigator: Equatable {
 	public static func == (lhs: Navigator, rhs: Navigator) -> Bool {
 		lhs === rhs
+	}
+}
+
+// MARK: Deprecated features.
+extension Navigator {
+	@available(*, deprecated, renamed: "historyStackSize")
+	public var currentStackIndex: Int {
+		historyStack.count - 1
 	}
 }
 
