@@ -10,6 +10,12 @@
 
 With **SwiftUI Router** you can power your SwiftUI app with path-based routing. By utilizing a path-based system, navigation in your app becomes more flexible and easier to maintain.
 
+<br>
+
+:warning: During WWDC22 Apple introduced [`NavigationStack`](https://developer.apple.com/documentation/swiftui/navigationstack) to SwiftUI. This provides a similar workflow to **SwiftUI Router** as well as being type-safe. There are however some key differences. It is recommended to try out `NavigationStack` before using **SwiftUI Router** in your project.
+
+<br>
+
 ## Index
 * [Installation](#installation-)
 * [Documentation](#documentation-)
