@@ -39,6 +39,7 @@ import SwiftUIRouter
 
 ## Documentation 📚
 - [Animating routes](/Docs/AnimatingRoutes.md)
+- [SwiftUI Router vs NavigationStack](https://github.com/frzi/SwiftUIRouter/discussions/59)
 
 <br>
 
