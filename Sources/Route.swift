@@ -130,6 +130,7 @@ public struct Route<ValidatedData, Content: View>: View {
 					.environment(\.relativePath, routeInformation.path)
 					.environmentObject(routeInformation)
 					.environmentObject(SwitchRoutesEnvironment())
+          .id(self.path)
 			}
 		}
 	}
