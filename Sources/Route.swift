@@ -212,7 +212,7 @@ final class PathMatcher: ObservableObject {
 
 	private struct CompiledRegex {
 		let path: String
-		let matchRegex: NSRegularExpression
+		let matchRegex: Regex<AnyRegexOutput>
 		let parameters: Set<String>
 	}
 
@@ -220,7 +220,7 @@ final class PathMatcher: ObservableObject {
 		case badParameter(String, culprit: String)
 	}
 
-	private static let variablesRegex = try! NSRegularExpression(pattern: #":([^\/\?]+)"#, options: [])
+	private static let variablesRegex = try! Regex(":([^\\/?]+)")
 
 	//
 
@@ -236,21 +236,20 @@ final class PathMatcher: ObservableObject {
 		// Extract the variables from the glob.
 		var variables = Set<String>()
 
-		let nsrange = NSRange(glob.startIndex..<glob.endIndex, in: glob)
-		let variableMatches = Self.variablesRegex.matches(in: glob, options: [], range: nsrange)
+		let variableMatches = glob.matches(of: Self.variablesRegex)
 
-		for match in variableMatches where match.numberOfRanges > 1 {
-			if let range = Range(match.range(at: 1), in: glob) {
+		for match in variableMatches where match.count > 1 {
+			if let range = match[1].range {
 				let variable = String(glob[range])
 
 				#if DEBUG
 				// In debug mode perform an extra check whether parameters contain invalid characters or
 				// whether the parameters starts with something besides a letter.
-				if let r = variable.range(of: "(^[^a-z]|[^a-z0-9])", options: [.regularExpression, .caseInsensitive]) {
-					throw CompileError.badParameter(variable, culprit: String(variable[r]))
+				if let m = variable.firstMatch(of: try! Regex("(^[^a-z]|[^a-z0-9])").ignoresCase()) {
+					throw CompileError.badParameter(variable, culprit: String(variable[m.range]))
 				}
 				#endif
-				
+
 				variables.insert(variable)
 			}
 		}
@@ -274,7 +273,7 @@ final class PathMatcher: ObservableObject {
 			(pattern.isEmpty ? "" : "(\(pattern))") +
 			(endsWithAsterisk ? "(/.*)?$" : "$")
 
-		let regex = try NSRegularExpression(pattern: pattern, options: [])
+		let regex = try Regex(pattern)
 
 		cached = CompiledRegex(path: glob, matchRegex: regex, parameters: variables)
 
@@ -284,9 +283,8 @@ final class PathMatcher: ObservableObject {
 	func match(glob: String, with path: String, relative: String = "/") throws -> RouteInformation? {
 		let completeGlob = resolvePaths(relative, glob)
 		let compiled = try compileRegex(completeGlob)
-		
-		var nsrange = NSRange(path.startIndex..<path.endIndex, in: path)
-		let matches = compiled.matchRegex.matches(in: path, options: [], range: nsrange)
+
+		let matches = path.matches(of: compiled.matchRegex)
 		guard !matches.isEmpty else {
 			return nil
 		}
@@ -295,9 +293,8 @@ final class PathMatcher: ObservableObject {
 
 		if !compiled.parameters.isEmpty {
 			for variable in compiled.parameters {
-				let nsrange = matches[0].range(withName: variable)
-				if nsrange.location != NSNotFound,
-				   let range = Range(nsrange, in: path)
+				if let output = matches[0].output.first(where: { $0.name == variable }),
+				   let range = output.range
 				{
 					var value = String(path[range])
 
@@ -314,10 +311,7 @@ final class PathMatcher: ObservableObject {
 		// We only want the part the glob is directly referencing.
 		// I.e., if the glob is `/news/article/*` and the navigation path is `/news/article/1/details`,
 		// we only want "/news/article".
-		nsrange = matches[0].range(at: 1) // Should be the entire capture group.
-		guard nsrange.location != NSNotFound,
-			let range = Range(nsrange, in: path)
-		else {
+		guard let range = matches[0].output[1].range else { // Should be the entire capture group.
 			return nil
 		}
 

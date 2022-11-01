@@ -1,14 +1,14 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.7.1
 
 import PackageDescription
 
 let package = Package(
 	name: "SwiftUIRouter",
 	platforms: [
-		.macOS(.v11),
-		.iOS(.v14),
-		.tvOS(.v14),
-		.watchOS(.v7)
+		.macOS(.v13),
+		.iOS(.v16),
+		.tvOS(.v16),
+		.watchOS(.v9),
 	],
 	products: [
 		.library(
