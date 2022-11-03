@@ -220,7 +220,7 @@ final class PathMatcher: ObservableObject {
 		case badParameter(String, culprit: String)
 	}
 
-	private static let variablesRegex = try! Regex(":([^\\/?]+)")
+	private static let variablesRegex = #/:([^\/?]+)/#
 
 	//
 
@@ -238,35 +238,34 @@ final class PathMatcher: ObservableObject {
 
 		let variableMatches = glob.matches(of: Self.variablesRegex)
 
-		for match in variableMatches where match.count > 1 {
-			if let range = match[1].range {
-				let variable = String(glob[range])
+		for match in variableMatches {
+			let variable = String(match.output.1)
 
-				#if DEBUG
-				// In debug mode perform an extra check whether parameters contain invalid characters or
-				// whether the parameters starts with something besides a letter.
-				if let m = variable.firstMatch(of: try! Regex("(^[^a-z]|[^a-z0-9])").ignoresCase()) {
-					throw CompileError.badParameter(variable, culprit: String(variable[m.range]))
-				}
-				#endif
-
-				variables.insert(variable)
+			#if DEBUG
+			// In debug mode perform an extra check whether parameters contain invalid characters or whether the
+			// parameters starts with something besides a letter.
+			if let m = variable.firstMatch(of: #/(^[^a-z]|[^a-z0-9])/#.ignoresCase()) {
+				throw CompileError.badParameter(variable, culprit: String(variable[m.range]))
 			}
+			#endif
+
+			variables.insert(variable)
 		}
 
 		// Create a new regex that will eventually match and extract the parameters from a path.
 		let endsWithAsterisk = glob.last == "*"
-		
+
 		var pattern = glob
-			.replacingOccurrences(of: "^[^/]/$", with: "", options: .regularExpression) // Trailing slash.
-			.replacingOccurrences(of: #"\/?\*"#, with: "", options: .regularExpression) // Trailing asterisk.
+			.replacing(#/^[^/]/$/#, with: "") // Trailing slash.
+			.replacing(#//?\*/#, with: "") // Trailing asterisk.
 
 		for (index, variable) in variables.enumerated() {
 			let isAtRoot = index == 0 && glob.starts(with: "/:" + variable)
 			pattern = pattern.replacingOccurrences(
 				of: "/:" + variable,
 				with: (isAtRoot ? "/" : "") + "(?<\(variable)>" + (isAtRoot ? "" : "/?") + "[^/?]+)",
-				options: .regularExpression)
+				options: .regularExpression
+			)
 		}
 
 		pattern = "^" +
