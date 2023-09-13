@@ -24,7 +24,7 @@ import SwiftUI
 /// the specifics of path relativity.
 public struct Navigate: View {
 
-	@EnvironmentObject private var navigator: Navigator
+	@Environment(Navigator.self) private var navigator
 	@Environment(\.relativePath) private var relativePath
 
 	private let path: String

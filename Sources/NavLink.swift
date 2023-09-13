@@ -21,8 +21,7 @@ import SwiftUI
 /// - Note: The given path is always relative to the current route environment. See the documentation for `Route` about
 /// the specifics of path relativity.
 public struct NavLink<Content: View>: View {
-
-	@EnvironmentObject private var navigator: Navigator
+	@Environment(Navigator.self) private var navigator
 	@Environment(\.relativePath) private var relativePath
 	
 	private let content: (Bool) -> Content

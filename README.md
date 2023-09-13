@@ -141,7 +141,7 @@ This view will automatically navigate to another path once rendered. One may con
 
 ### `Navigator`
 ```swift
-@EnvironmentObject var navigator: Navigator
+@Environment(Navigator.self) var navigator
 ```
 An environment object containg the data of the `Router`. With this object you can programmatically navigate to another path, go back in the history stack or go forward.
 
@@ -149,7 +149,7 @@ An environment object containg the data of the `Router`. With this object you ca
 
 ### `RouteInformation`
 ```swift
-@EnvironmentObject var routeInformation: RouteInformation
+@Environment(RouteInformation.self) var routeInformation
 ```
 A lightweight object containing information of the current `Route`. A `RouteInformation` contains the relative path and a `[String : String]` with all the parsed [parameters](#parameters).  
 

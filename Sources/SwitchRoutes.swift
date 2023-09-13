@@ -3,8 +3,8 @@
 //  Created by Freek (github.com/frzi) 2021
 //
 
-import Combine
 import SwiftUI
+import Observation
 
 /// Render the first matching `Route` and ignore the rest.
 ///
@@ -29,9 +29,8 @@ import SwiftUI
 /// - Note: Using `SwitchRoute` can give a slight performance boost when working with a lot of sibling `Route`s,
 /// as once a path match has been found, all subsequent path matching will be skipped.
 public struct SwitchRoutes<Content: View>: View {
-
 	// Required to be present, forcing the `SwitchRoutes` to re-render on path changes.
-	@EnvironmentObject private var navigation: Navigator
+	@Environment(Navigator.self) private var navigator
 	private let contents: () -> Content
 
 	/// - Parameter contents: Routes to switch through.
@@ -40,13 +39,16 @@ public struct SwitchRoutes<Content: View>: View {
 	}
 	
 	public var body: some View {
-		contents()
-			.environmentObject(SwitchRoutesEnvironment(active: true))
+		// Force rerender.
+		_ = navigator.path
+
+		return contents()
+			.environment(SwitchRoutesEnvironment(active: true))
 	}
 }
 
 // MARK: - SwitchRoutes environment object.
-final class SwitchRoutesEnvironment: ObservableObject {
+@Observable final class SwitchRoutesEnvironment {
 	/// Tells `Route`s whether they're enclosed in a `SwitchRoutes`.
 	let isActive: Bool
 	

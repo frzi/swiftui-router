@@ -3,6 +3,7 @@
 //  Created by Freek (github.com/frzi) 2021
 //
 
+import Observation
 import SwiftUI
 
 /// EnvironmentObject storing the state of a Router.
@@ -13,15 +14,14 @@ import SwiftUI
 /// - Note: This EnvironmentObject is available inside the hierarchy of a `Router`.
 ///
 /// ```swift
-/// @EnvironmentObject var navigator: Navigator
+/// @Environment(Navigator.self) var navigator
 /// ```
-public final class Navigator: ObservableObject {
-
-	@Published private var historyStack: [String]
-	@Published private var forwardStack: [String] = []
+@Observable public final class Navigator {
+	private var historyStack: [String]
+	private var forwardStack: [String] = []
 	
 	/// Last navigation that occurred.
-	@Published public private(set) var lastAction: NavigationAction?
+	public private(set) var lastAction: NavigationAction?
 	
 	private let initialPath: String
 	
@@ -43,6 +43,7 @@ public final class Navigator: ObservableObject {
 	public var path: String {
 		historyStack.last ?? initialPath
 	}
+//	public private(set) var path: String = "/"
 
 	public var canGoBack: Bool {
 		historyStack.count > 1
@@ -102,11 +103,12 @@ public final class Navigator: ObservableObject {
 		else {
 			historyStack.append(path)
 		}
-		
+
 		lastAction = NavigationAction(
 			currentPath: path,
 			previousPath: previousPath,
-			action: .push)
+			action: .push
+		)
 	}
 
 	/// Go back *n* steps in the navigation history.
@@ -129,7 +131,8 @@ public final class Navigator: ObservableObject {
 		lastAction = NavigationAction(
 			currentPath: path,
 			previousPath: previousPath,
-			action: .back)
+			action: .back
+		)
 	}
 	
 	/// Go forward *n* steps in the navigation history.
@@ -152,7 +155,8 @@ public final class Navigator: ObservableObject {
 		lastAction = NavigationAction(
 			currentPath: path,
 			previousPath: previousPath,
-			action: .forward)
+			action: .forward
+		)
 	}
 	
 	/// Clear the entire navigation history.

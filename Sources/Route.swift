@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import Observation
 import SwiftUI
 
 /// A route showing only its content when its path matches with the environment path.
@@ -67,9 +68,9 @@ public struct Route<ValidatedData, Content: View>: View {
 	public typealias Validator = (RouteInformation) -> ValidatedData?
 
 	@Environment(\.relativePath) private var relativePath
-	@EnvironmentObject private var navigator: Navigator
-	@EnvironmentObject private var switchEnvironment: SwitchRoutesEnvironment
-	@StateObject private var pathMatcher = PathMatcher()
+	@Environment(Navigator.self) private var navigator
+	@Environment(SwitchRoutesEnvironment.self) private var switchEnvironment
+	@State private var pathMatcher = PathMatcher()
 
 	private let content: (ValidatedData) -> Content
 	private let path: String
@@ -118,7 +119,9 @@ public struct Route<ValidatedData, Content: View>: View {
 				}
 			}
 			catch {
+				#if DEBUG
 				fatalError("Unable to compile path glob '\(path)' to Regex. Error: \(error)")
+				#endif
 			}
 		}
 
@@ -128,8 +131,8 @@ public struct Route<ValidatedData, Content: View>: View {
 			{
 				content(validatedData)
 					.environment(\.relativePath, routeInformation.path)
-					.environmentObject(routeInformation)
-					.environmentObject(SwitchRoutesEnvironment())
+					.environment(routeInformation)
+					.environment(SwitchRoutesEnvironment())
 			}
 		}
 	}
@@ -183,11 +186,11 @@ public extension Route where ValidatedData == RouteInformation {
 /// Information passed to the contents of a `Route`. As well as accessible as an environment object
 /// inside the hierarchy of a `Route`.
 /// ```swift
-/// @EnvironmentObject var routeInformation: RouteInformation
+/// @Environment(RouteInformation.self) var routeInformation
 /// ```
 /// This object contains the resolved parameters (variables) of the `Route`'s path, as well as the relative path
 /// for all views inside the hierarchy.
-public final class RouteInformation: ObservableObject {
+@Observable public final class RouteInformation {
 	/// The resolved path component of the parent `Route`. For internal use only, at the moment.
 	let matchedPath: String
 
@@ -208,8 +211,7 @@ public final class RouteInformation: ObservableObject {
 // MARK: -
 /// Object that will (lazily) compile regex from the given path glob, compare it with another path and return
 /// any parsed information (like identifiers).
-final class PathMatcher: ObservableObject {
-
+@Observable final class PathMatcher {
 	private struct CompiledRegex {
 		let path: String
 		let matchRegex: Regex<AnyRegexOutput>
