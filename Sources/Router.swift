@@ -1,9 +1,8 @@
 //
 //  SwiftUI Router
-//  Created by Freek (github.com/frzi) 2021
+//  Created by Freek (github.com/frzi) 2023
 //
 
-import Combine
 import SwiftUI
 
 /// Entry for a routing environment.

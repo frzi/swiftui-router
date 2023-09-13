@@ -1,6 +1,6 @@
 //
 //  SwiftUI Router
-//  Created by Freek (github.com/frzi) 2021
+//  Created by Freek (github.com/frzi) 2023
 //
 
 import Foundation
@@ -161,23 +161,6 @@ public extension Route where ValidatedData == RouteInformation {
 		self.path = path
 		self.validator = { $0 }
 		self.content = { _ in content() }
-	}
-
-	// MARK: - Deprecated initializers.
-	// These will be completely removed in a future version.
-	@available(*, deprecated, renamed: "init(_:content:)")
-	init(path: String, @ViewBuilder content: @escaping (RouteInformation) -> Content) {
-		self.init(path, content: content)
-	}
-
-	@available(*, deprecated, renamed: "init(_:content:)")
-	init(path: String, @ViewBuilder content: @escaping () -> Content) {
-		self.init(path, content: content)
-	}
-
-	@available(*, deprecated, renamed: "init(_:content:)")
-	init(path: String, content: @autoclosure @escaping () -> Content) {
-		self.init(path, content: content)
 	}
 }
 

@@ -1,6 +1,6 @@
 //
 //  SwiftUI Router
-//  Created by Freek (github.com/frzi) 2021
+//  Created by Freek (github.com/frzi) 2023
 //
 
 import Observation
@@ -43,7 +43,6 @@ import SwiftUI
 	public var path: String {
 		historyStack.last ?? initialPath
 	}
-//	public private(set) var path: String = "/"
 
 	public var canGoBack: Bool {
 		historyStack.count > 1
@@ -172,15 +171,6 @@ extension Navigator: Equatable {
 		lhs === rhs
 	}
 }
-
-// MARK: Deprecated features.
-extension Navigator {
-	@available(*, deprecated, renamed: "historyStackSize")
-	public var currentStackIndex: Int {
-		historyStack.count - 1
-	}
-}
-
 
 // MARK: -
 /// Information about a navigation that occurred.
