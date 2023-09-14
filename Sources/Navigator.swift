@@ -23,8 +23,9 @@ import SwiftUI
 	/// Last navigation that occurred.
 	public private(set) var lastAction: NavigationAction?
 	
-	private let initialPath: String
-	
+	/// The path the `Router` was initialized with.
+	public let initialPath: String
+
 	/// Initialize a `Navigator` to be fed to `Router` manually.
 	///
 	/// Initialize an instance of `Navigator` to keep a reference to outside of the SwiftUI lifecycle.
