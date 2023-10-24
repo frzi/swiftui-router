@@ -214,12 +214,14 @@ final class SwiftUIRouterTests: XCTestCase {
 	func testNavigationAction() {
 		// From, to, expected direction.
 		let tests: [(String, String, NavigationAction.Direction)] = [
-			("/", "/hello", .deeper),
-			("/hello", "/world", .sideways),
-			("/hello", "/", .higher),
+			("/", "/movies", .deeper),
+			("/movies", "/movies/genres", .deeper),
 			("/movies/genres", "/movies", .higher),
-			("/movies/actors", "/movies/genres", .sideways),
+			("/movies/genres", "/news", .higher),
 			("/movies/genres", "/news/latest", .higher),
+			("/movies/genres/disco", "/music/genres/disco", .higher), // Same parent, different root.
+			("/movies", "/music", .sideways),
+			("/movies/actors", "/movies/genres", .sideways),
 		]
 		
 		for (from, to, direction) in tests {

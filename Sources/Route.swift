@@ -212,7 +212,7 @@ public extension Route where ValidatedData == RouteInformation {
 	private var cached: CompiledRegex?
 	
 	private func compileRegex(_ glob: String) throws -> CompiledRegex {
-		if let cached = cached,
+		if let cached,
 		   cached.path == glob
 		{
 			return cached
