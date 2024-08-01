@@ -3,6 +3,7 @@
 //  Created by Freek (github.com/frzi) 2021
 //
 
+import Dispatch
 import SwiftUI
 
 /// EnvironmentObject storing the state of a Router.
@@ -15,7 +16,8 @@ import SwiftUI
 /// ```swift
 /// @EnvironmentObject var navigator: Navigator
 /// ```
-public final class Navigator: ObservableObject {
+public final class Navigator: ObservableObject, @unchecked Sendable {
+    private let serialAccessQueue = DispatchQueue(label: "serialAccessQueue", qos: .default)
 
 	@Published private var historyStack: [String]
 	@Published private var forwardStack: [String] = []
@@ -84,29 +86,31 @@ public final class Navigator: ObservableObject {
 	/// - Parameter path: Path of the new location to navigate to.
 	/// - Parameter replace: if `true` will replace the last path in the history stack with the new path.
 	public func navigate(_ path: String, replace: Bool = false) {
-		let path = resolvePaths(self.path, path)
-		let previousPath = self.path
-		
-		guard path != previousPath else {
-			#if DEBUG
-			print("SwiftUIRouter: Navigating to the same path ignored.")
-			#endif
-			return
-		}
-	
-		forwardStack.removeAll()
+        serialAccessQueue.sync {
+            let path = resolvePaths(self.path, path)
+            let previousPath = self.path
 
-		if replace && !historyStack.isEmpty {
-			historyStack[historyStack.endIndex - 1] = path
-		}
-		else {
-			historyStack.append(path)
-		}
-		
-		lastAction = NavigationAction(
-			currentPath: path,
-			previousPath: previousPath,
-			action: .push)
+            guard path != previousPath else {
+#if DEBUG
+                print("SwiftUIRouter: Navigating to the same path ignored.")
+#endif
+                return
+            }
+
+            forwardStack.removeAll()
+
+            if replace && !historyStack.isEmpty {
+                historyStack[historyStack.endIndex - 1] = path
+            }
+            else {
+                historyStack.append(path)
+            }
+
+            lastAction = NavigationAction(
+                currentPath: path,
+                previousPath: previousPath,
+                action: .push)
+        }
 	}
 
 	/// Go back *n* steps in the navigation history.
@@ -118,18 +122,19 @@ public final class Navigator: ObservableObject {
 		guard canGoBack else {
 			return
 		}
+        serialAccessQueue.sync {
+            let previousPath = path
 
-		let previousPath = path
+            let total = min(total, historyStack.count)
+            let start = historyStack.count - total
+            forwardStack.append(contentsOf: historyStack[start...].reversed())
+            historyStack.removeLast(total)
 
-		let total = min(total, historyStack.count)
-		let start = historyStack.count - total
-		forwardStack.append(contentsOf: historyStack[start...].reversed())
-		historyStack.removeLast(total)
-		
-		lastAction = NavigationAction(
-			currentPath: path,
-			previousPath: previousPath,
-			action: .back)
+            lastAction = NavigationAction(
+                currentPath: path,
+                previousPath: previousPath,
+                action: .back)
+        }
 	}
 	
 	/// Go forward *n* steps in the navigation history.
@@ -137,30 +142,34 @@ public final class Navigator: ObservableObject {
 	/// `total` will always be clamped and thus prevent from going out of bounds.
 	///
 	/// - Parameter total: Total steps to go forward.
-	public func goForward(total: Int = 1) {
-		guard canGoForward else {
-			return
-		}
+    public func goForward(total: Int = 1) {
+        guard canGoForward else {
+            return
+        }
 
-		let previousPath = path
+        serialAccessQueue.sync {
+            let previousPath = path
 
-		let total = min(total, forwardStack.count)
-		let start = forwardStack.count - total
-		historyStack.append(contentsOf: forwardStack[start...])
-		forwardStack.removeLast(total)
-		
-		lastAction = NavigationAction(
-			currentPath: path,
-			previousPath: previousPath,
-			action: .forward)
-	}
+            let total = min(total, forwardStack.count)
+            let start = forwardStack.count - total
+            historyStack.append(contentsOf: forwardStack[start...])
+            forwardStack.removeLast(total)
+
+            lastAction = NavigationAction(
+                currentPath: path,
+                previousPath: previousPath,
+                action: .forward)
+        }
+    }
 	
 	/// Clear the entire navigation history.
-	public func clear() {
-		forwardStack.removeAll()
-		historyStack = [path]
-		lastAction = nil
-	}
+    public func clear() {
+        serialAccessQueue.sync {
+            forwardStack.removeAll()
+            historyStack = [path]
+            lastAction = nil
+        }
+    }
 }
 
 extension Navigator: Equatable {
@@ -180,9 +189,9 @@ extension Navigator {
 
 // MARK: -
 /// Information about a navigation that occurred.
-public struct NavigationAction: Equatable {
+public struct NavigationAction: Equatable, Sendable {
 	/// Directional difference between the current path and the previous path.
-	public enum Direction {
+    public enum Direction: Sendable {
 		/// The new path is higher up in the hierarchy *or* a completely different path.
 		/// Example: `/user/settings` → `/user`. Or `/favorite/music` → `/news/latest`.
 		case higher
@@ -193,7 +202,7 @@ public struct NavigationAction: Equatable {
 	}
 	
 	/// The kind of navigation that occurred.
-	public enum Action {
+    public enum Action: Sendable {
 		/// Navigated to a new path.
 		case push
 		/// Navigated back in the stack.
