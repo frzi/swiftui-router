@@ -62,7 +62,11 @@ public struct Router<Content: View>: View {
 
 // MARK: - Relative path environment key
 struct RelativeRouteEnvironment: EnvironmentKey {
-	static var defaultValue = "/"
+#if swift(>=5.10)
+    static nonisolated(unsafe) var defaultValue = "/"
+#else
+    static var defaultValue = "/"
+#endif
 }
 
 public extension EnvironmentValues {
