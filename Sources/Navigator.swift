@@ -6,7 +6,7 @@
 import Dispatch
 import SwiftUI
 
-/// EnvironmentObject storing the state of a Router.
+/// Environment object storing the state of a Router.
 ///
 /// Use this object to programmatically navigate to a new path, to jump forward or back in the history, to clear the
 /// history, or to find out whether the user can go back or forward.
@@ -14,16 +14,16 @@ import SwiftUI
 /// - Note: This EnvironmentObject is available inside the hierarchy of a `Router`.
 ///
 /// ```swift
-/// @EnvironmentObject var navigator: Navigator
+/// @Environment(Navigator.self) var navigator
 /// ```
-public final class Navigator: ObservableObject, @unchecked Sendable {
+@Observable public final class Navigator: @unchecked Sendable {
     private let serialAccessQueue = DispatchQueue(label: "serialAccessQueue", qos: .default)
 
-	@Published private var historyStack: [String]
-	@Published private var forwardStack: [String] = []
-	
+	private var historyStack: [String]
+	private var forwardStack: [String] = []
+
 	/// Last navigation that occurred.
-	@Published public private(set) var lastAction: NavigationAction?
+	public private(set) var lastAction: NavigationAction?
 	
 	private let initialPath: String
 	
@@ -91,9 +91,9 @@ public final class Navigator: ObservableObject, @unchecked Sendable {
             let previousPath = self.path
 
             guard path != previousPath else {
-#if DEBUG
+				#if DEBUG
                 print("SwiftUIRouter: Navigating to the same path ignored.")
-#endif
+				#endif
                 return
             }
 
@@ -109,7 +109,8 @@ public final class Navigator: ObservableObject, @unchecked Sendable {
             lastAction = NavigationAction(
                 currentPath: path,
                 previousPath: previousPath,
-                action: .push)
+                action: .push
+			)
         }
 	}
 
@@ -133,7 +134,8 @@ public final class Navigator: ObservableObject, @unchecked Sendable {
             lastAction = NavigationAction(
                 currentPath: path,
                 previousPath: previousPath,
-                action: .back)
+                action: .back
+			)
         }
 	}
 	
@@ -158,7 +160,8 @@ public final class Navigator: ObservableObject, @unchecked Sendable {
             lastAction = NavigationAction(
                 currentPath: path,
                 previousPath: previousPath,
-                action: .forward)
+                action: .forward
+			)
         }
     }
 	
@@ -185,7 +188,6 @@ extension Navigator {
 		historyStack.count - 1
 	}
 }
-
 
 // MARK: -
 /// Information about a navigation that occurred.
